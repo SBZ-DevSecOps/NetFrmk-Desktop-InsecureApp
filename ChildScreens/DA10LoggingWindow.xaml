@@ -1,0 +1,132 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA10LoggingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA10 – Insufficient Logging / Monitoring"
+        Height="1100" Width="1100" Background="{DynamicResource DA10Panel7}">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="22" Foreground="{DynamicResource DA10Panel1}" Margin="0,0,0,16"/>
+            <TextBlock Name="IntroText" FontSize="14" Foreground="{DynamicResource DA10Panel3}" Margin="0,0,0,18"/>
+            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}" Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+            <UniformGrid Columns="3" HorizontalAlignment="Center">
+
+                <!-- 1. No log sensitive file access -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel1}" BorderThickness="2" Background="{DynamicResource DA10Panel7}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoFileLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel1}"/>
+                        <TextBlock Name="NoFileLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel1}"/>
+                        <TextBox Name="NoFileLogInput" Width="210" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="C:\Windows\System32\drivers\etc\hosts"/>
+                        <Button Name="NoFileLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel1}" Foreground="White" Click="NoFileLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 2. No admin access logging -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel2}" BorderThickness="2" Background="{DynamicResource DA10Panel6}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoAdminLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel2}"/>
+                        <TextBlock Name="NoAdminLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel2}"/>
+                        <TextBox Name="NoAdminLogInput" Width="210" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="admin"/>
+                        <Button Name="NoAdminLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel2}" Foreground="White" Click="NoAdminLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 3. No config change logging -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel3}" BorderThickness="2" Background="{DynamicResource DA10Panel5}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoConfigLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel3}"/>
+                        <TextBlock Name="NoConfigLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel3}"/>
+                        <TextBox Name="NoConfigKeyInput" Width="120" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="theme"/>
+                        <TextBox Name="NoConfigValInput" Width="80" Margin="0,2,0,4" Style="{StaticResource RoundedTextBox}" Text="dark"/>
+                        <Button Name="NoConfigLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel3}" Foreground="White" Click="NoConfigLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 4. No auth failure log -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel4}" BorderThickness="2" Background="{DynamicResource DA10Panel4}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoAuthLogLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="NoAuthLogDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="NoAuthLogUserInput" Width="100" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="user"/>
+                        <TextBox Name="NoAuthLogPwdInput" Width="100" Margin="0,2,0,4" Style="{StaticResource RoundedTextBox}" Text="badpass"/>
+                        <Button Name="NoAuthLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="White" Foreground="{DynamicResource DA10Panel4}" Click="NoAuthLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 5. No alert on forbidden access -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel5}" BorderThickness="2" Background="{DynamicResource DA10Panel2}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoForbiddenLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel5}"/>
+                        <TextBlock Name="NoForbiddenDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel5}"/>
+                        <TextBox Name="NoForbiddenUserInput" Width="100" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="user"/>
+                        <TextBox Name="NoForbiddenActionInput" Width="100" Margin="0,2,0,4" Style="{StaticResource RoundedTextBox}" Text="admin-panel"/>
+                        <Button Name="NoForbiddenButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel5}" Foreground="White" Click="NoForbiddenButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 6. No deletion log -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel6}" BorderThickness="2" Background="{DynamicResource DA10Panel3}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoDeletionLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel6}"/>
+                        <TextBlock Name="NoDeletionLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel6}"/>
+                        <TextBox Name="NoDeletionInput" Width="160" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="testfile.txt"/>
+                        <Button Name="NoDeletionLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel6}" Foreground="Black" Click="NoDeletionLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 7. No log on critical error/crash -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel7}" BorderThickness="2" Background="{DynamicResource DA10Panel1}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoCritErrorLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel7}"/>
+                        <TextBlock Name="NoCritErrorLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel7}"/>
+                        <Button Name="NoCritErrorLogButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel7}" Foreground="Black" Click="NoCritErrorLogButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 8. Logging only in DEBUG mode -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel1}" BorderThickness="2" Background="{DynamicResource DA10Panel5}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="DebugOnlyLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel1}"/>
+                        <TextBlock Name="DebugOnlyDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel1}"/>
+                        <TextBox Name="DebugOnlyInput" Width="180" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="An event happened"/>
+                        <Button Name="DebugOnlyButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel1}" Foreground="White" Click="DebugOnlyButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 9. No log rotation/backup -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel2}" BorderThickness="2" Background="{DynamicResource DA10Panel4}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="NoRotationLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel2}"/>
+                        <TextBlock Name="NoRotationDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel2}"/>
+                        <TextBox Name="NoRotationInput" Width="180" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="No log rotation"/>
+                        <Button Name="NoRotationButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel2}" Foreground="White" Click="NoRotationButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 10. World-writable log file -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel3}" BorderThickness="2" Background="{DynamicResource DA10Panel6}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="WorldWriteLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel3}"/>
+                        <TextBlock Name="WorldWriteDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel3}"/>
+                        <Button Name="WorldWriteButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel3}" Foreground="White" Click="WorldWriteButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 11. Log folder open to all users -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel4}" BorderThickness="2" Background="{DynamicResource DA10Panel2}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="OpenFolderLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel4}"/>
+                        <TextBlock Name="OpenFolderDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel4}"/>
+                        <Button Name="OpenFolderButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel4}" Foreground="White" Click="OpenFolderButton_Click"/>
+                    </StackPanel>
+                </Border>
+                <!-- 12. Log cleartext secrets -->
+                <Border CornerRadius="5" BorderBrush="{DynamicResource DA10Panel5}" BorderThickness="2" Background="{DynamicResource DA10Panel7}" Margin="8">
+                    <StackPanel Margin="10">
+                        <TextBlock Name="CleartextSecretsLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA10Panel5}"/>
+                        <TextBlock Name="CleartextSecretsDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA10Panel5}"/>
+                        <TextBox Name="CleartextSecretsUserInput" Width="100" Margin="0,10,0,4" Style="{StaticResource RoundedTextBox}" Text="alice"/>
+                        <TextBox Name="CleartextSecretsPwdInput" Width="100" Margin="0,2,0,4" Style="{StaticResource RoundedTextBox}" Text="supersecret"/>
+                        <Button Name="CleartextSecretsButton" Style="{StaticResource RoundedButton}" Width="170" Background="{DynamicResource DA10Panel5}" Foreground="Black" Click="CleartextSecretsButton_Click"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,199 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA04CommWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA04 – Insecure Communication and Interactions"
+        Height="2200" Width="1320"
+        Background="#F5FAFF">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="24"
+                       Foreground="{DynamicResource DA04Panel1}" Margin="0,0,0,18"/>
+            <TextBlock Name="IntroText" FontSize="14"
+                       Foreground="{DynamicResource DA04Panel5}" Margin="0,0,0,20"/>
+            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}"
+                      Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                <!-- 1. Plain HTTP Request -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel1}" Background="{DynamicResource DA04Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="HttpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel1}"/>
+                        <TextBlock Name="HttpDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="HttpUrlInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="HttpButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel1}" Foreground="White"
+                                Click="HttpButton_Click" Width="220"/>
+                        <TextBlock Name="HttpResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel1}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Plain TCP Socket (no TLS) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel2}" Background="{DynamicResource DA04Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TcpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel2}"/>
+                        <TextBlock Name="TcpDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="TcpHostInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="TcpButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel2}" Foreground="White"
+                                Click="TcpButton_Click" Width="220"/>
+                        <TextBlock Name="TcpResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. UDP Packet -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel3}" Background="{DynamicResource DA04Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="UdpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel3}"/>
+                        <TextBlock Name="UdpDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="UdpHostInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="UdpButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel3}" Foreground="White"
+                                Click="UdpButton_Click" Width="220"/>
+                        <TextBlock Name="UdpResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. WebSocket (no encryption) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel4}" Background="{DynamicResource DA04Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="WebSocketLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="WebSocketDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="WebSocketInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="WebSocketButton" Style="{StaticResource RoundedButton}"
+                                Background="White" Foreground="{DynamicResource DA04Panel4}"
+                                Click="WebSocketButton_Click" Width="220"/>
+                        <TextBlock Name="WebSocketResult" Margin="0,8,0,0" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. Named Pipe Communication (no ACL) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel5}" Background="{DynamicResource DA04Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PipeLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel5}"/>
+                        <TextBlock Name="PipeDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="PipeButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel5}" Foreground="#212121"
+                                Click="PipeButton_Click" Width="220"/>
+                        <TextBlock Name="PipeResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. Insecure File Drop (Shared Folder) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel6}" Background="{DynamicResource DA04Panel1}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="FileDropLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel6}"/>
+                        <TextBlock Name="FileDropDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="FileDropButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel6}" Foreground="#212121"
+                                Click="FileDropButton_Click" Width="220"/>
+                        <TextBlock Name="FileDropResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel6}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. Unsafe Command Execution (Shell/External App) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel7}" Background="{DynamicResource DA04Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CmdLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel7}"/>
+                        <TextBlock Name="CmdDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="CmdInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="CmdButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel7}" Foreground="#212121"
+                                Click="CmdButton_Click" Width="220"/>
+                        <TextBlock Name="CmdResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 8. Unsafe Use of DllImport / COM -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel1}" Background="{DynamicResource DA04Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="DllLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel1}"/>
+                        <TextBlock Name="DllDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="DllButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel1}" Foreground="White"
+                                Click="DllButton_Click" Width="220"/>
+                        <TextBlock Name="DllResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel1}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 9. Dangerous Clipboard Broadcast / Global Hotkey -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel2}" Background="{DynamicResource DA04Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ClipboardLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel2}"/>
+                        <TextBlock Name="ClipboardDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="ClipboardButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel2}" Foreground="White"
+                                Click="ClipboardButton_Click" Width="220"/>
+                        <TextBlock Name="ClipboardResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 10. SMTP Mail Send (no TLS) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel3}" Background="{DynamicResource DA04Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="MailLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel3}"/>
+                        <TextBlock Name="MailDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="MailServerInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="MailButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel3}" Foreground="White"
+                                Click="MailButton_Click" Width="220"/>
+                        <TextBlock Name="MailResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 11. Registry Write (no ACL) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel4}" Background="{DynamicResource DA04Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="RegistryLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel4}"/>
+                        <TextBlock Name="RegistryDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="RegistryInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="RegistryButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel4}" Foreground="#212121"
+                                Click="RegistryButton_Click" Width="220"/>
+                        <TextBlock Name="RegistryResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 12. Local Temp File for IPC -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA04Panel5}" Background="{DynamicResource DA04Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TempIpcLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel5}"/>
+                        <TextBlock Name="TempIpcDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="TempIpcInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="320" Margin="0,10,0,4"/>
+                        <Button Name="TempIpcButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA04Panel5}" Foreground="#212121"
+                                Click="TempIpcButton_Click" Width="220"/>
+                        <TextBlock Name="TempIpcResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,105 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA02AuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA02 – Broken Authentication"
+        Height="980" Width="1150"
+        Background="#FFF9F2">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="24"
+                       Foreground="{DynamicResource DA02Panel1}" Margin="0,0,0,18"/>
+            <TextBlock Name="IntroText" FontSize="14"
+                       Foreground="{DynamicResource DA02Panel4}" Margin="0,0,0,20"/>
+            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}"
+                      Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                <!-- 1. Password in Cleartext -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA02Panel1}" Background="{DynamicResource DA02Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PwClearLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel1}"/>
+                        <TextBlock Name="PwClearDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="PwClearInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="220" Margin="0,10,0,4"/>
+                        <Button Name="PwClearButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA02Panel1}" Foreground="White"
+                                Click="PwClearButton_Click" Width="170"/>
+                        <TextBlock Name="PwClearResult" Margin="0,8,0,0" Foreground="{DynamicResource DA02Panel1}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Weak Token Generation -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA02Panel2}" Background="{DynamicResource DA02Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TokenLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel2}"/>
+                        <TextBlock Name="TokenDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="TokenButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA02Panel2}" Foreground="White"
+                                Click="TokenButton_Click" Width="170"/>
+                        <TextBox Name="TokenOutput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4" IsReadOnly="True"/>
+                        <TextBlock Name="TokenResult" Margin="0,8,0,0" Foreground="{DynamicResource DA02Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. No Account Lockout -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA02Panel3}" Background="{DynamicResource DA02Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="NoLockoutLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel3}"/>
+                        <TextBlock Name="NoLockoutDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="NoLockoutUserInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="120" Margin="0,8,0,4"/>
+                        <TextBox Name="NoLockoutPwInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="120" Margin="0,0,0,4" />
+                        <Button Name="NoLockoutButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA02Panel3}" Foreground="White"
+                                Click="NoLockoutButton_Click" Width="170"/>
+                        <TextBlock Name="NoLockoutResult" Margin="0,8,0,0" Foreground="{DynamicResource DA02Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. Session Fixation -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA02Panel4}" Background="{DynamicResource DA02Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SessFixLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="SessFixDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="SessFixInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="220" Margin="0,10,0,4"/>
+                        <Button Name="SessFixButton" Style="{StaticResource RoundedButton}"
+                                Background="White" Foreground="{DynamicResource DA02Panel4}"
+                                Click="SessFixButton_Click" Width="170"/>
+                        <TextBlock Name="SessFixResult" Margin="0,8,0,0" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. Missing MFA -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA02Panel5}" Background="{DynamicResource DA02Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="MfaLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel5}"/>
+                        <TextBlock Name="MfaDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="MfaUserInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="120" Margin="0,8,0,4"/>
+                        <TextBox Name="MfaPwInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="120" Margin="0,0,0,4"/>
+                        <Button Name="MfaButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA02Panel5}" Foreground="#212121"
+                                Click="MfaButton_Click" Width="170"/>
+                        <TextBlock Name="MfaResult" Margin="0,8,0,0" Foreground="{DynamicResource DA02Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

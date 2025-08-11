@@ -1,0 +1,135 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA05AccessControlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA05 – Insufficient Authorization / Access Control"
+        Height="1700" Width="1350" Background="#F0F8F0">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="24"
+                       Foreground="{DynamicResource DA05Panel1}" Margin="0,0,0,18"/>
+            <TextBlock Name="IntroText" FontSize="14"
+                       Foreground="{DynamicResource DA05Panel5}" Margin="0,0,0,20"/>
+            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}"
+                      Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+
+            <UniformGrid Columns="3" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                <!-- 1. BOLA -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel1}" Background="{DynamicResource DA05Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="BolaLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel1}"/>
+                        <TextBlock Name="BolaDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel1}"/>
+                        <TextBox Name="BolaObjectIdInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="C:\Users\Public\shared.txt"/>
+                        <Button Name="BolaTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel1}" Foreground="White" Click="BolaTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Function Auth -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel2}" Background="{DynamicResource DA05Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="FuncAuthLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel2}"/>
+                        <TextBlock Name="FuncAuthDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel2}"/>
+                        <TextBox Name="FuncAuthInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="alice"/>
+                        <Button Name="FuncAuthTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel2}" Foreground="White" Click="FuncAuthTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Privilege Escalation -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel3}" Background="{DynamicResource DA05Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PrivilegeEscalationLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel3}"/>
+                        <TextBlock Name="PrivilegeEscalationDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel3}"/>
+                        <TextBox Name="PrivilegeEscalationInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="whoami"/>
+                        <Button Name="PrivilegeEscalationTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel3}" Foreground="White" Click="PrivilegeEscalationTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. Horizontal Escalation -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel4}" Background="{DynamicResource DA05Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="HorizontalEscalationLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="HorizontalEscalationDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="HorizontalEscalationInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="bob"/>
+                        <Button Name="HorizontalEscalationTestButton" Style="{StaticResource RoundedButton}" Background="White" Foreground="{DynamicResource DA05Panel4}" Click="HorizontalEscalationTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. Forced Browsing -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel5}" Background="{DynamicResource DA05Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ForcedBrowsingLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel5}"/>
+                        <TextBlock Name="ForcedBrowsingDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel5}"/>
+                        <TextBox Name="ForcedInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="HiddenAdmin"/>
+                        <Button Name="ForcedBrowsingTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel5}" Foreground="White" Click="ForcedBrowsingTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. Auth Bypass -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel6}" Background="{DynamicResource DA05Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="AuthBypassLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel6}"/>
+                        <TextBlock Name="AuthBypassDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel6}"/>
+                        <TextBox Name="AuthBypassInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="admin"/>
+                        <Button Name="AuthBypassTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel6}" Foreground="#212121" Click="AuthBypassTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. AdminFunc (Unprotected Admin) -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel7}" Background="{DynamicResource DA05Panel1}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="AdminFuncLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel7}"/>
+                        <TextBlock Name="AdminFuncDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel7}"/>
+                        <TextBox Name="AdminFuncInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="DangerDeleteAll"/>
+                        <Button Name="AdminFuncTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel7}" Foreground="#212121" Click="AdminFuncTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 8. Event Handler -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel1}" Background="{DynamicResource DA05Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="EventHandlerLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel1}"/>
+                        <TextBlock Name="EventHandlerDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel1}"/>
+                        <Button Name="EventHandlerTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel1}" Foreground="White" Click="EventHandlerTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 9. Obscurity -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel2}" Background="{DynamicResource DA05Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ObscurityLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA05Panel2}"/>
+                        <TextBlock Name="ObscurityDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA05Panel2}"/>
+                        <TextBox Name="ObscurityInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="opensecret"/>
+                        <Button Name="ClipboardTestButton" Style="{StaticResource RoundedButton}" Background="{DynamicResource DA05Panel2}" Foreground="White" Click="ClipboardTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 10. Role Confusion -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA05Panel3}" Background="{DynamicResource DA05Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="RoleConfusionLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="RoleConfusionDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="RoleConfusionInput" Style="{StaticResource RoundedTextBox}" Width="320" Margin="0,10,0,4" Text="manager,admin"/>
+                        <Button Name="RoleConfusionTestButton" Style="{StaticResource RoundedButton}" Background="White" Foreground="{DynamicResource DA05Panel3}" Click="RoleConfusionTestButton_Click" Width="220"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

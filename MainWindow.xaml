@@ -1,0 +1,27 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="759" Width="733"
+        Background="{DynamicResource MainPanel7}">
+    <StackPanel Margin="36,28" VerticalAlignment="Center" HorizontalAlignment="Center" Width="700">
+        <TextBlock Text="Net8-Desktop-InsecureApp – OWASP Desktop Top 10"
+                   FontWeight="Bold" FontSize="24"
+                   Foreground="{DynamicResource MainPanel1}" Margin="0,0,0,16" Width="605"/>
+        <UniformGrid Columns="1" Rows="10" Margin="0,6,0,0">
+            <Button Name="BtnDA01" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel1}" Content="DA01 – Injections" Click="BtnDA01_Click"/>
+            <Button Name="BtnDA02" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel2}" Content="DA02 – Broken Authentication" Click="BtnDA02_Click"/>
+            <Button Name="BtnDA03" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel3}" Content="DA03 – Sensitive Data Exposure / Data Protection" Click="BtnDA03_Click"/>
+            <Button Name="BtnDA04" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel4}" Content="DA04 – Insecure Communication / Unsafe Interprocess" Click="BtnDA04_Click"/>
+            <Button Name="BtnDA05" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel5}" Content="DA05 – Insufficient Authorization / Access Control" Click="BtnDA05_Click"/>
+            <Button Name="BtnDA06" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel6}" Content="DA06 – Insecure Resources / Dependency Management" Click="BtnDA06_Click"/>
+            <Button Name="BtnDA07" Style="{StaticResource RoundedMainButton}" Background="{DynamicResource MainPanel7}" Foreground="#23272A" Content="DA07 – Poor Code Quality / Unsafe APIs" Click="BtnDA07_Click"/>
+            <Button Name="BtnDA08" Style="{StaticResource RoundedMainButton}" Background="#EEEEEE" Foreground="#006064" Content="DA08 – Security Misconfiguration" Click="BtnDA08_Click"/>
+            <Button Name="BtnDA09" Style="{StaticResource RoundedMainButton}" Background="#ECE9F4" Foreground="#212121" Content="DA09 – Improper Error Handling" Click="BtnDA09_Click"/>
+            <Button Name="BtnDA10" Style="{StaticResource RoundedMainButton}" Background="#EFEBE9" Foreground="#3E2723" Content="DA10 – Insufficient Logging / Monitoring" Click="BtnDA10_Click"/>
+        </UniformGrid>
+    </StackPanel>
+</Window>

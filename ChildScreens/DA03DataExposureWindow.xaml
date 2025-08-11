@@ -1,0 +1,170 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA03DataExposureWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA03 – Data Exposure"
+        Height="1350" Width="1200"
+        Background="#F5FAFF">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="24"
+                       Foreground="{DynamicResource DA03Panel1}" Margin="0,0,0,18"/>
+            <TextBlock Name="IntroText" FontSize="14"
+                       Foreground="{DynamicResource DA03Panel5}" Margin="0,0,0,20"/>
+            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}"
+                      Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                <!-- 1. Sensitive Data in Memory -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel1}" Background="{DynamicResource DA03Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="MemoryLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel1}"/>
+                        <TextBlock Name="MemoryDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="MemoryInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4"/>
+                        <Button Name="MemoryButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel1}" Foreground="White"
+                                Click="MemoryButton_Click" Width="180"/>
+                        <TextBlock Name="MemoryResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel1}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. Export Data in Plain CSV -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel2}" Background="{DynamicResource DA03Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CsvLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel2}"/>
+                        <TextBlock Name="CsvDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="CsvButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel2}" Foreground="White"
+                                Click="CsvButton_Click" Width="180"/>
+                        <TextBlock Name="CsvResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. Logging Sensitive Data -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel3}" Background="{DynamicResource DA03Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="LogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel3}"/>
+                        <TextBlock Name="LogDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="LogInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4"/>
+                        <Button Name="LogButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel3}" Foreground="White"
+                                Click="LogButton_Click" Width="180"/>
+                        <TextBlock Name="LogResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. Public File Share -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel4}" Background="{DynamicResource DA03Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ShareLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="ShareDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="ShareInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4"/>
+                        <Button Name="ShareButton" Style="{StaticResource RoundedButton}"
+                                Background="White" Foreground="{DynamicResource DA03Panel4}"
+                                Click="ShareButton_Click" Width="180"/>
+                        <TextBlock Name="ShareResult" Margin="0,8,0,0" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. Clipboard Data Exposure -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel5}" Background="{DynamicResource DA03Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ClipboardLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel5}"/>
+                        <TextBlock Name="ClipboardDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="ClipboardInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4"/>
+                        <Button Name="ClipboardButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel5}" Foreground="#212121"
+                                Click="ClipboardButton_Click" Width="180"/>
+                        <TextBlock Name="ClipboardResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. Weak Crypto -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel6}" Background="{DynamicResource DA03Panel1}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CryptoLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel6}"/>
+                        <TextBlock Name="CryptoDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="CryptoInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="240" Margin="0,10,0,4"/>
+                        <Button Name="CryptoButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel6}" Foreground="#212121"
+                                Click="CryptoButton_Click" Width="180"/>
+                        <TextBlock Name="CryptoResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel6}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. Hardcoded Secret -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel4}" Background="{DynamicResource DA03Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="HardcodedLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel4}"/>
+                        <TextBlock Name="HardcodedDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="HardcodedButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel4}" Foreground="White"
+                                Click="HardcodedButton_Click" Width="180"/>
+                        <TextBlock Name="HardcodedResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 8. Sensitive Data in Temp File -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel5}" Background="{DynamicResource DA03Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TempLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel5}"/>
+                        <TextBlock Name="TempDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="TempButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel5}" Foreground="#212121"
+                                Click="TempButton_Click" Width="180"/>
+                        <TextBlock Name="TempResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 9. Sensitive Data in Window Title -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel6}" Background="{DynamicResource DA03Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TitleLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel6}"/>
+                        <TextBlock Name="TitleDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="TitleSecretInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="180" Margin="0,10,0,4"/>
+                        <Button Name="TitleButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel6}" Foreground="#212121"
+                                Click="TitleButton_Click" Width="180"/>
+                        <TextBlock Name="TitleResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel6}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 10. Verbose Exception With Secret -->
+                <Border CornerRadius="5" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA03Panel7}" Background="{DynamicResource DA03Panel1}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ExceptionLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA03Panel7}"/>
+                        <TextBlock Name="ExceptionDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="ExceptionSecretInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="180" Margin="0,10,0,4"/>
+                        <Button Name="ExceptionButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA03Panel7}" Foreground="#212121"
+                                Click="ExceptionButton_Click" Width="180"/>
+                        <TextBlock Name="ExceptionResult" Margin="0,8,0,0" Foreground="{DynamicResource DA03Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

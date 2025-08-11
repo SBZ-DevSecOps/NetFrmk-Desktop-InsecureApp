@@ -1,0 +1,147 @@
+﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA01InjectionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
+        mc:Ignorable="d"
+        Title="DA01 – Injections"
+        Height="980" Width="1150"
+        Background="#FCF6F7">
+    <ScrollViewer>
+        <StackPanel Margin="18">
+            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="24"
+                       Foreground="{DynamicResource DA01Panel1}" Margin="0,0,0,18"/>
+            <TextBlock Name="IntroText" FontSize="14"
+                       Foreground="{DynamicResource DA01Panel3}" Margin="0,0,0,20"/>
+            <ComboBox Name="LanguageSelector"
+          Width="240"
+          MinWidth="240"
+          MaxWidth="240"
+          SelectionChanged="LanguageSelector_Changed"
+          Style="{StaticResource RoundedComboBox}">
+                <ComboBox.Resources>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Width" Value="240"/>
+                        <Setter Property="MinWidth" Value="240"/>
+                        <Setter Property="MaxWidth" Value="240"/>
+                    </Style>
+                </ComboBox.Resources>
+                <ComboBoxItem Content="English"/>
+                <ComboBoxItem Content="Français"/>
+            </ComboBox>
+
+
+
+            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                <!-- 1. SQL Injection -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel1}" Background="{DynamicResource DA01Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SqlLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel1}"/>
+                        <TextBlock Name="SqlDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="SqlInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" Text="1 OR 1=1"/>
+                        <Button Name="SqlButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel1}" Foreground="White"
+                                Click="SqlButton_Click" Width="180"/>
+                        <TextBlock Name="SqlResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel1}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 2. OS Command Injection -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel2}" Background="{DynamicResource DA01Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CmdLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel2}"/>
+                        <TextBlock Name="CmdDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="CmdInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" Text="calc.exe"/>
+                        <Button Name="CmdButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel2}" Foreground="White"
+                                Click="CmdButton_Click" Width="180"/>
+                        <TextBlock Name="CmdResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 3. LDAP Injection -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel3}" Background="{DynamicResource DA01Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="LdapLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel3}"/>
+                        <TextBlock Name="LdapDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="LdapInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" Text="*)(|(user=*))"/>
+                        <Button Name="LdapButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel3}" Foreground="#212121"
+                                Click="LdapButton_Click" Width="180"/>
+                        <TextBlock Name="LdapResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4. XML/XXE Injection -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel4}" Background="{DynamicResource DA01Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="XmlLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                        <TextBlock Name="XmlDesc" FontSize="12" Margin="0,3" Foreground="White"/>
+                        <TextBox Name="XmlInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Height="36" Margin="0,10,0,4"
+                                 Text="&lt;!DOCTYPE foo [ &lt;!ENTITY xxe SYSTEM 'file:///C:/Windows/win.ini' &gt; ]&gt;&#xA;&lt;root&gt;&amp;xxe;&lt;/root&gt;"/>
+                        <Button Name="XmlButton" Style="{StaticResource RoundedButton}"
+                                Background="White" Foreground="{DynamicResource DA01Panel4}"
+                                Click="XmlButton_Click" Width="180"/>
+                        <TextBlock Name="XmlResult" Margin="0,8,0,0" Foreground="White" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. NoSQL Injection -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel5}" Background="{DynamicResource DA01Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="NoSqlLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel5}"/>
+                        <TextBlock Name="NoSqlDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="NoSqlInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" />
+                        <Button Name="NoSqlButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel5}" Foreground="#212121"
+                                Click="NoSqlButton_Click" Width="180"/>
+                        <TextBlock Name="NoSqlResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+
+                <!-- 6. Path Traversal -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel6}" Background="{DynamicResource DA01Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PathLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel6}"/>
+                        <TextBlock Name="PathDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="PathInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" Text="../secret.txt"/>
+                        <Button Name="PathButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel6}" Foreground="#212121"
+                                Click="PathButton_Click" Width="180"/>
+                        <TextBlock Name="PathResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel6}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. XSS (WebView) -->
+                <Border CornerRadius="10" BorderThickness="2"
+                        BorderBrush="{DynamicResource DA01Panel7}" Background="{DynamicResource DA01Panel1}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="XssLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA01Panel7}"/>
+                        <TextBlock Name="XssDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="XssInput" Style="{StaticResource RoundedTextBox}"
+                                 Width="330" Margin="0,10,0,4" Text="&lt;script&gt;alert('xss')&lt;/script&gt;"/>
+                        <Button Name="XssButton" Style="{StaticResource RoundedButton}"
+                                Background="{DynamicResource DA01Panel7}" Foreground="#212121"
+                                Click="XssButton_Click" Width="180"/>
+                        <TextBlock Name="XssResult" Margin="0,8,0,0" Foreground="{DynamicResource DA01Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
