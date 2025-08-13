@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
@@ -119,7 +120,7 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
             }
             catch (Exception ex)
             {
-                // Mauvais pattern : catch générique, pas de différenciation, log incomplet
+                // Mauvais pattern : catch générique, pas de différenciation, log incomplet
                 Debug.WriteLine(ex.ToString());
             }
             MessageBox.Show("Error(s) happened but were only debugged.", "Poor IO/Net Handling");
@@ -157,6 +158,66 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
             }
             catch { }
             MessageBox.Show($"Crash dump written with Everyone permissions: {dump}", "World-Readable Dump");
+        }
+
+        // =================== NOUVEAUX CAS ===================
+
+        // 13. Mauvais rethrow qui perd la stack (throw ex)
+        public static void RethrowLostStack()
+        {
+            try
+            {
+                int.Parse("xxx");
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    // ❌ Mauvais rethrow : perd la stack d'origine
+                    throw ex;
+                }
+                catch (Exception re)
+                {
+                    MessageBox.Show("Rethrow used 'throw ex;' (original stack lost):\n\n" + re, "Rethrow (lost stack)");
+                }
+            }
+        }
+
+        // 14. Exception dans finally masque la cause initiale
+        public static void FinallyMasksOriginal()
+        {
+            try
+            {
+                try
+                {
+                    File.ReadAllText("missing-again.txt");
+                }
+                finally
+                {
+                    // ❌ Masque l'exception initiale
+                    throw new Exception("Finally threw and masked original error");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Observed exception (original masked):\n\n" + ex, "Finally Mask");
+            }
+        }
+
+        // 15. Tâche fire-and-forget non observée (UnobservedTaskException)
+        public static string FireAndForgetTask()
+        {
+            Task.Run(() =>
+            {
+                // ❌ Exception jamais await/observée
+                throw new Exception("Background task crashed (unobserved)");
+            });
+
+            // Tente d’induire la finalisation des tâches fautives
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            return "Started a background task that throws without being awaited. Exception may be lost/unobserved.";
         }
     }
 }

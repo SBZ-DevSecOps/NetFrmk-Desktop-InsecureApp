@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Text;
 using System.Windows;
 
 namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
@@ -12,7 +14,7 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
         // 1. No logging of sensitive file access
         public static void NoFileAccessLog(string file)
         {
-            File.ReadAllText(file); // No log
+            File.ReadAllText(file); // ❌ No log/trace
             MessageBox.Show("Sensitive file accessed (no log).", "No File Log");
         }
 
@@ -26,7 +28,7 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
         // 3. No config change logging
         public static void NoConfigChangeLog(string setting, string value)
         {
-            File.WriteAllText("config.txt", $"{setting}={value}");
+            File.WriteAllText("config.txt", setting + "=" + value);
             MessageBox.Show("Config changed (no log).", "No Config Log");
         }
 
@@ -62,15 +64,15 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
         public static void DebugOnlyLog(string eventMsg)
         {
 #if DEBUG
-            File.AppendAllText("debug-only.log", eventMsg + "\n");
+            File.AppendAllText("debug-only.log", eventMsg + Environment.NewLine);
 #endif
-            MessageBox.Show("Event occurred (log only if debug build).", "Debug Only Log");
+            MessageBox.Show("Event occurred (log only if DEBUG build).", "Debug Only Log");
         }
 
         // 9. No log rotation/backup
         public static void NoLogRotation(string msg)
         {
-            File.AppendAllText("huge-logfile.log", msg + "\n");
+            File.AppendAllText("huge-logfile.log", msg + Environment.NewLine);
             MessageBox.Show("Log appended (never rotated/archived).", "No Rotation");
         }
 
@@ -78,7 +80,7 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
         public static void WorldWritableLog()
         {
             string logfile = "world-write.log";
-            File.WriteAllText(logfile, "Sensitive log entry\n");
+            File.WriteAllText(logfile, "Sensitive log entry" + Environment.NewLine);
             try
             {
                 var fi = new FileInfo(logfile);
@@ -89,7 +91,7 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
                     AccessControlType.Allow));
                 fi.SetAccessControl(acl);
             }
-            catch { }
+            catch { /* ignore demo ACL failures */ }
             MessageBox.Show("Log file created world-writable!", "World Writable");
         }
 
@@ -108,16 +110,66 @@ namespace NetFrmk_Desktop_InsecureApp.Vulnerabilities
                     AccessControlType.Allow));
                 dirInfo.SetAccessControl(acl);
             }
-            catch { }
-            File.AppendAllText(Path.Combine(folder, "event.log"), "Some log entry\n");
+            catch { /* ignore demo ACL failures */ }
+            File.AppendAllText(Path.Combine(folder, "event.log"), "Some log entry" + Environment.NewLine);
             MessageBox.Show("Log folder is world-writable!", "Open Log Folder");
         }
 
         // 12. Logging secrets/credentials in cleartext
         public static void LogCleartextSecrets(string username, string password)
         {
-            File.AppendAllText("sensitive-log.log", $"LOGIN: {username} / PASSWORD: {password}\n");
+            File.AppendAllText("sensitive-log.log", "LOGIN=" + username + " ; PASSWORD=" + password + Environment.NewLine);
             MessageBox.Show("Credentials written in log!", "Log Secrets");
+        }
+
+        // =================== NEW CASES ===================
+
+        // 13. Log Injection / Log Forging (no sanitization of CR/LF)
+        public static void LogInjection(string user, string action)
+        {
+            // ❌ User-controlled text written raw → allows forged/multi-line log entries
+            string line = DateTime.Now.ToString("s") + " | user=" + user + " | action=" + action + Environment.NewLine;
+            File.AppendAllText("audit.log", line, Encoding.UTF8);
+            MessageBox.Show("Audit written without sanitization (possible log forging).", "Log Injection");
+        }
+
+        // 14. Insecure remote logging over HTTP (no TLS, no integrity)
+        public static void RemoteHttpLog(string url, string message)
+        {
+            try
+            {
+                using (var wc = new WebClient())
+                {
+                    // ❌ Sends logs via plaintext HTTP, querystring/body leakage possible
+                    string response = wc.UploadString(url, "msg=" + Uri.EscapeDataString(message ?? ""));
+                    MessageBox.Show("Sent log to: " + url + "\nResponse length: " + (response == null ? 0 : response.Length), "Remote HTTP Log");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Remote log failed: " + ex.Message, "Remote HTTP Log");
+            }
+        }
+
+        // 15. Sensitive data in Windows Event Log (PII/token)
+        public static void EventLogSensitive(string username, string token)
+        {
+            try
+            {
+                const string src = "DA10InsecureSource";
+                if (!EventLog.SourceExists(src))
+                {
+                    // ⚠️ may require admin; errors are swallowed for demo
+                    try { EventLog.CreateEventSource(src, "Application"); } catch { }
+                }
+                // ❌ Writes sensitive values into system event log
+                EventLog.WriteEntry(src, "User=" + username + " ; BearerToken=" + token, EventLogEntryType.Information);
+                MessageBox.Show("Wrote sensitive data to Windows Event Log.", "Event Log Sensitive");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("EventLog write failed (likely permissions): " + ex.Message, "Event Log Sensitive");
+            }
         }
     }
 }

@@ -1,118 +1,177 @@
 ﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA09ErrorHandlingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
-        mc:Ignorable="d"
-        Title="DA09 – Improper Error Handling"
-        Height="800" Width="1440" Background="#FCF4FA">
-    <ScrollViewer>
-        <StackPanel Margin="18">
-            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="22" Foreground="{DynamicResource DA09Panel1}" Margin="0,0,0,16"/>
-            <TextBlock Name="IntroText" FontSize="14" Foreground="{DynamicResource DA09Panel3}" Margin="0,0,0,18"/>
-            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}" Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
-                <ComboBoxItem Content="English"/>
-                <ComboBoxItem Content="Français"/>
-            </ComboBox>
-            <UniformGrid Columns="3" HorizontalAlignment="Center">
+        Title=""
+        Height="1000" Width="1600"
+        WindowStartupLocation="CenterScreen">
 
-                <!-- 1. Stacktrace to UI -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel1}" BorderThickness="2" Background="{DynamicResource DA09Panel7}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="StacktraceLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel1}"/>
-                        <TextBlock Name="StacktraceDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel1}"/>
-                        <Button Name="StacktraceButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel1}" Foreground="White" Click="StacktraceButton_Click"/>
+    <Window.Resources>
+        <!-- Compact variants (assumes RoundedTextBox / RoundedButton exist in App resources) -->
+        <Style x:Key="RoundedButtonCompact" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="MinWidth" Value="160"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="16">
+            <!-- Header / Language -->
+            <DockPanel Margin="0,0,0,12">
+                <TextBlock x:Name="TitleText" DockPanel.Dock="Left" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource DA09Panel7}"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Border CornerRadius="6" Padding="6,2" BorderThickness="1"
+                  BorderBrush="{DynamicResource DA09Panel7}" Background="{DynamicResource DA09Panel2}" Margin="8,0,0,0">
+                        <ComboBox x:Name="LanguageSelector" Width="140" SelectionChanged="LanguageSelector_Changed">
+                            <ComboBoxItem>English</ComboBoxItem>
+                            <ComboBoxItem>Français</ComboBoxItem>
+                        </ComboBox>
+                    </Border>
+                </StackPanel>
+            </DockPanel>
+
+            <TextBlock x:Name="IntroText" Margin="0,0,0,16" Foreground="{DynamicResource DA09Panel7}"/>
+
+            <!-- 15 cards (5×3) -->
+            <UniformGrid Columns="5" Rows="3">
+
+                <!-- 1 Stacktrace to UI -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel2}" Background="{DynamicResource DA09Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="StacktraceLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel2}"/>
+                        <TextBlock Name="StacktraceDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="StacktraceButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel2}" Foreground="#212121" Click="StacktraceButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 2. Uncaught exception (crash) -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel2}" BorderThickness="2" Background="{DynamicResource DA09Panel6}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="UncaughtLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel2}"/>
-                        <TextBlock Name="UncaughtDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel2}"/>
-                        <Button Name="UncaughtButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel2}" Foreground="Black" Click="UncaughtButton_Click"/>
+
+                <!-- 2 Uncaught -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel3}" Background="{DynamicResource DA09Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="UncaughtLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel3}"/>
+                        <TextBlock Name="UncaughtDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="UncaughtButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel3}" Foreground="#212121" Click="UncaughtButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 3. Silent swallow -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel3}" BorderThickness="2" Background="{DynamicResource DA09Panel5}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="SilentSwallowLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel3}"/>
-                        <TextBlock Name="SilentSwallowDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel3}"/>
-                        <Button Name="SilentSwallowButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel3}" Foreground="Black" Click="SilentSwallowButton_Click"/>
+
+                <!-- 3 Silent swallow -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel4}" Background="{DynamicResource DA09Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SilentSwallowLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel4}"/>
+                        <TextBlock Name="SilentSwallowDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="SilentSwallowButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel4}" Foreground="#212121" Click="SilentSwallowButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 4. Technical error in UI -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel4}" BorderThickness="2" Background="{DynamicResource DA09Panel4}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="TechErrorLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
-                        <TextBlock Name="TechErrorDesc" FontSize="12" Margin="0,3" Foreground="White"/>
-                        <Button Name="TechErrorButton" Style="{StaticResource RoundedButton}" Width="180" Background="White" Foreground="{DynamicResource DA09Panel4}" Click="TechErrorButton_Click"/>
+
+                <!-- 4 Technical UI -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel5}" Background="{DynamicResource DA09Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TechErrorLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel5}"/>
+                        <TextBlock Name="TechErrorDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="TechErrorButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel5}" Foreground="#212121" Click="TechErrorButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 5. Verbose prod log -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel5}" BorderThickness="2" Background="{DynamicResource DA09Panel3}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="VerboseLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel5}"/>
-                        <TextBlock Name="VerboseLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel5}"/>
-                        <Button Name="VerboseLogButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel5}" Foreground="Black" Click="VerboseLogButton_Click"/>
+
+                <!-- 5 Verbose log -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel6}" Background="{DynamicResource DA09Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="VerboseLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel6}"/>
+                        <TextBlock Name="VerboseLogDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="VerboseLogButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel6}" Foreground="#212121" Click="VerboseLogButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 6. Leak system info -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel6}" BorderThickness="2" Background="{DynamicResource DA09Panel2}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="SystemInfoLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel6}"/>
-                        <TextBlock Name="SystemInfoDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel6}"/>
-                        <Button Name="SystemInfoButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel6}" Foreground="Black" Click="SystemInfoButton_Click"/>
+
+                <!-- 6 System info leak -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel7}" Background="{DynamicResource DA09Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SystemInfoLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel7}"/>
+                        <TextBlock Name="SystemInfoDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="SystemInfoButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel7}" Foreground="#212121" Click="SystemInfoButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 7. Inner exception -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel7}" BorderThickness="2" Background="{DynamicResource DA09Panel1}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="InnerExceptionLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel7}"/>
-                        <TextBlock Name="InnerExceptionDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel7}"/>
-                        <Button Name="InnerExceptionButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel7}" Foreground="Black" Click="InnerExceptionButton_Click"/>
+
+                <!-- 7 Inner exception -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel2}" Background="{DynamicResource DA09Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="InnerExceptionLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel2}"/>
+                        <TextBlock Name="InnerExceptionDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="InnerExceptionButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel2}" Foreground="#212121" Click="InnerExceptionButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 8. Throw w/o global handler -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel1}" BorderThickness="2" Background="{DynamicResource DA09Panel5}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="ThrowLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel1}"/>
-                        <TextBlock Name="ThrowDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel1}"/>
-                        <Button Name="ThrowButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel1}" Foreground="White" Click="ThrowButton_Click"/>
+
+                <!-- 8 Throw w/o handler -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel3}" Background="{DynamicResource DA09Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ThrowLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel3}"/>
+                        <TextBlock Name="ThrowDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="ThrowButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel3}" Foreground="#212121" Click="ThrowButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 9. No global handler -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel2}" BorderThickness="2" Background="{DynamicResource DA09Panel4}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="NoGlobalHandlerLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel2}"/>
-                        <TextBlock Name="NoGlobalHandlerDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel2}"/>
-                        <Button Name="NoGlobalHandlerButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel2}" Foreground="White" Click="NoGlobalHandlerButton_Click"/>
+
+                <!-- 9 No global handler -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel4}" Background="{DynamicResource DA09Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="NoGlobalHandlerLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel4}"/>
+                        <TextBlock Name="NoGlobalHandlerDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="NoGlobalHandlerButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel4}" Foreground="#212121" Click="NoGlobalHandlerButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 10. Poor IO/Network handling -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel3}" BorderThickness="2" Background="{DynamicResource DA09Panel6}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="PoorIoNetLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel3}"/>
-                        <TextBlock Name="PoorIoNetDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel3}"/>
-                        <Button Name="PoorIoNetButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel3}" Foreground="Black" Click="PoorIoNetButton_Click"/>
+
+                <!-- 10 Poor IO/Net -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel5}" Background="{DynamicResource DA09Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PoorIoNetLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel5}"/>
+                        <TextBlock Name="PoorIoNetDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="PoorIoNetButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel5}" Foreground="#212121" Click="PoorIoNetButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 11. Sensitive info in log -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel4}" BorderThickness="2" Background="{DynamicResource DA09Panel7}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="SensitiveLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel4}"/>
-                        <TextBlock Name="SensitiveLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel4}"/>
-                        <Button Name="SensitiveLogButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel4}" Foreground="Black" Click="SensitiveLogButton_Click"/>
+
+                <!-- 11 Sensitive log -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel6}" Background="{DynamicResource DA09Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SensitiveLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel6}"/>
+                        <TextBlock Name="SensitiveLogDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="SensitiveLogButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel6}" Foreground="#212121" Click="SensitiveLogButton_Click"/>
                     </StackPanel>
                 </Border>
-                <!-- 12. World-readable crash dump -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA09Panel5}" BorderThickness="2" Background="{DynamicResource DA09Panel2}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="CrashDumpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel5}"/>
-                        <TextBlock Name="CrashDumpDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA09Panel5}"/>
-                        <Button Name="CrashDumpButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA09Panel5}" Foreground="White" Click="CrashDumpButton_Click"/>
+
+                <!-- 12 Crash dump world-readable -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel7}" Background="{DynamicResource DA09Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CrashDumpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel7}"/>
+                        <TextBlock Name="CrashDumpDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="CrashDumpButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel7}" Foreground="#212121" Click="CrashDumpButton_Click"/>
                     </StackPanel>
                 </Border>
+
+                <!-- 13 Rethrow lost stack -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel2}" Background="{DynamicResource DA09Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="RethrowLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel2}"/>
+                        <TextBlock Name="RethrowDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="RethrowButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel2}" Foreground="#212121" Click="RethrowButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 14 Finally masks -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel3}" Background="{DynamicResource DA09Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="FinallyMaskLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel3}"/>
+                        <TextBlock Name="FinallyMaskDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="FinallyMaskButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel3}" Foreground="#212121" Click="FinallyMaskButton_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 15 Fire-and-forget task (with result text) -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA09Panel4}" Background="{DynamicResource DA09Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="FireForgetLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA09Panel4}"/>
+                        <TextBlock Name="FireForgetDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="FireForgetButton" Style="{StaticResource RoundedButtonCompact}" Background="{DynamicResource DA09Panel4}" Foreground="#212121" Click="FireForgetButton_Click"/>
+                        <TextBlock Name="FireForgetResult" Margin="8,8,0,0" Foreground="{DynamicResource DA09Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>

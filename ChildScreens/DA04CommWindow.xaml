@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
         mc:Ignorable="d"
         Title="DA04 – Insecure Communication and Interactions"
-        Height="2200" Width="1320"
+        Height="1000" Width="1600"
         Background="#F5FAFF">
     <ScrollViewer>
         <StackPanel Margin="18">
@@ -19,7 +19,7 @@
                 <ComboBoxItem Content="English"/>
                 <ComboBoxItem Content="Français"/>
             </ComboBox>
-            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <UniformGrid Columns="5" Rows="3" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                 <!-- 1. Plain HTTP Request -->
                 <Border CornerRadius="5" BorderThickness="2"
@@ -192,6 +192,101 @@
                         <TextBlock Name="TempIpcResult" Margin="0,8,0,0" Foreground="{DynamicResource DA04Panel5}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
+
+                <!-- 14. FTP Upload (no TLS) -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA04Panel2}" Background="{DynamicResource DA04Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="FtpLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel2}"/>
+                        <TextBlock Name="FtpDesc" FontSize="12" Margin="0,3"/>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- URL -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- user/pw -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- content -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- bouton/result -->
+                            </Grid.RowDefinitions>
+
+                            <TextBox Name="FtpUrlInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="0" Grid.ColumnSpan="2" Margin="0,6,0,6"/>
+
+                            <TextBox Name="FtpUserInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="1" Grid.Column="0" Margin="0,6,6,6"/>
+                            <TextBox Name="FtpPwInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="1" Grid.Column="1" Margin="6,6,0,6"/>
+
+                            <TextBox Name="FtpContentInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="2" Grid.ColumnSpan="2" Margin="0,6,0,6"/>
+
+                            <Button Name="FtpButton" Style="{StaticResource RoundedButton}"
+              Background="{DynamicResource DA04Panel2}" Foreground="#212121"
+              Click="FtpButton_Click" Width="180" Grid.Row="3" Grid.Column="0" Margin="0,6,6,0"/>
+                            <TextBlock Name="FtpResult" Margin="6,10,0,0"
+                 Foreground="{DynamicResource DA04Panel2}" FontWeight="Bold"
+                 Grid.Row="3" Grid.Column="1"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 15. SOAP/XML over HTTP (clear) -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA04Panel6}" Background="{DynamicResource DA04Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="SoapLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel6}"/>
+                        <TextBlock Name="SoapDesc" FontSize="12" Margin="0,3"/>
+                        <Grid Margin="0,6,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- URL -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- SOAPAction -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Body -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- bouton/result -->
+                            </Grid.RowDefinitions>
+
+                            <TextBox Name="SoapUrlInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="0" Margin="0,6,0,6"/>
+                            <TextBox Name="SoapActionInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="1" Margin="0,6,0,6"/>
+                            <TextBox Name="SoapBodyInput" Style="{StaticResource RoundedTextBox}"
+               Grid.Row="2" Margin="0,6,0,6"/>
+
+                            <StackPanel Grid.Row="3" Orientation="Horizontal">
+                                <Button Name="SoapButton" Style="{StaticResource RoundedButton}"
+                Background="{DynamicResource DA04Panel6}" Foreground="#212121"
+                Click="SoapButton_Click" Width="180" Margin="0,6,8,0"/>
+                                <TextBlock Name="SoapResult" Margin="8,10,0,0"
+                   Foreground="{DynamicResource DA04Panel6}" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 16. Insecure Binary Deserialization -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA04Panel7}" Background="{DynamicResource DA04Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="DeserializeLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA04Panel7}"/>
+                        <TextBlock Name="DeserializeDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="DeserializeB64Input" Style="{StaticResource RoundedTextBox}" Margin="0,10,0,8"/>
+                        <Button Name="DeserializeButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA04Panel7}" Foreground="#212121"
+            Click="DeserializeButton_Click" Width="180"/>
+                        <TextBlock Name="DeserializeResult" Margin="8,8,0,0"
+               Foreground="{DynamicResource DA04Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
 
             </UniformGrid>
         </StackPanel>

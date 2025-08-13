@@ -20,37 +20,77 @@ Chaque vulnérabilité est documentée dans son fichier respectif, et le code est v
 
 ##  Ne jamais utiliser ce code en production !
 
-# DA01 – Injections
+# DA01 – Injections (WPF, .NET Framework 4.7.2)
 
-## Français
-Ce module démontre de multiples variantes d'injections dans une application desktop .NET?:
-- **Injection SQL**?: requête construite dynamiquement, vulnérable à l’injection de code SQL (`admin'--`)
-- **Injection de commande OS**?: exécution d’une commande dont l’argument est contrôlé par l’utilisateur (`127.0.0.1 & calc.exe`)
-- **Injection LDAP**?: filtre de recherche utilisateur non échappé (`*)(uid=*)`)
-- **Injection XML (XXE)**?: XML parser vulnérable à l’inclusion d’entité externe (`<!DOCTYPE foo ...>`)
-- **NoSQL Injection**?: paramètre non contrôlé dans une requête JSON MongoDB/CosmosDB (`{$ne:null}`)
-- **Path Traversal**?: chemin fichier non validé (`..\..\Windows\win.ini`)
-- **OS Path Injection**?: exécution d’un binaire dont le chemin est fourni (`c:\windows\system32\notepad.exe`)
-- **XSS Desktop**?: contenu HTML non échappé dans un WebView (`<script>alert('xss')</script>`)
-- **Expression Language Injection**?: expression dynamique exécutable (`x == 1 || true`)
+**Purpose.** Showcase 15 classic injection sinks in a desktop context. The UI calls centralized sinks in `InjectionVuln.cs` so SAST can flag CWE issues reliably.
 
-Chaque champ propose un **payload prêt à l’emploi** et chaque attaque est déclenchable par un bouton.
+## How to run
+- Build & run the app, open **DA01 – Injections**.
+- Use default payloads or your own; observe popups/inline feedback. Some cases will error on purpose (still valuable for SAST).
+
+## Injections covered (15)
+| # | UI Card | Method | What it shows | Likely CWE | SAST Hints |
+|---|---------|--------|---------------|------------|------------|
+| 1 | SQL Injection | `RunSqlInjection(input)` | String concat in SQL command | CWE-89 | `SqlCommand.CommandText` + concat |
+| 2 | OS Command Injection | `RunCommandInjection(payload)` | `cmd.exe /C` with user input | CWE-78 | `Process.Start("cmd.exe", "/C "+…)` |
+| 3 | LDAP Injection | `RunLdapInjection(filter)` | Unsafe `DirectorySearcher.Filter` | CWE-90 | `DirectorySearcher.Filter` + concat |
+| 4 | XPath Injection | `RunXpathInjection(xpath)` | User XPath passed to `SelectNodes` | CWE-643 | `XmlDocument.SelectNodes(user)` |
+| 5 | XXE / XML Injection | `RunXxeInjection(xml)` | DTD + resolver enabled | CWE-611 | `DtdProcessing.Parse`, `XmlResolver` |
+| 6 | XSLT Injection | `RunXsltInjection(xsl)` | User stylesheet loaded/applied | CWE-94/917 | `XslCompiledTransform.Load` (user) |
+| 7 | OS Path Injection | `RunOsPathInjection(path)` | Write to user path (traversal) | CWE-22 | `File.WriteAllText(userPath)` |
+| 8 | Expression Injection | `RunExpressionInjection(expr)` | `DataTable.Compute(expr)` | CWE-94 | Expression evaluation |
+| 9 | Regex Injection / ReDoS | `RunRegexInjection(pattern,sample)` | User regex compiled & executed | CWE-1333 | `new Regex(userPattern)` |
+|10 | Process Args Injection | `RunProcessArgsInjection(exe,args)` | Launch external tool with args | CWE-88/78 | `ProcessStartInfo` user args |
+|11 | CSV Formula Injection | `RunCsvFormulaInjection(cell)` | Dangerous formula cell in CSV | CWE-1236 | `=,+,-,@` leading cells |
+|12 | PowerShell Injection | `RunPowershellInjection(ps)` | powershell.exe `-Command` user data | CWE-78 | `Process.Start("powershell.exe", …)` |
+|13 | XAML Injection | `RunXamlInjection(xaml)` | `XamlReader.Parse` on user XAML | CWE-915/94 | `XamlReader.Parse` |
+|14 | Reflection Type Injection | `RunReflectionInjection(type)` | `Type.GetType` + instantiate | CWE-470 | `Activator.CreateInstance(user)` |
+|15 | Assembly Load Injection | `RunAssemblyLoadInjection(path)` | Load assembly from user path | CWE-114 | `Assembly.LoadFrom(user)` |
+
+## Safer alternatives (short)
+- Use **parameterized queries** and allowlists.
+- Never pass user input to **shell/PowerShell**; prefer safe APIs.
+- Disable DTD/XmlResolver; avoid `XamlReader.Parse` on untrusted text.
+- Sanitize/normalize filesystem paths; use sandboxed locations.
+- Avoid dynamic code/expr/reflection on untrusted input.
+
 
 ---
 
-## English
-This module demonstrates multiple injection variants in a .NET desktop application:
-- **SQL Injection**: dynamic query construction, vulnerable to SQL code injection (`admin'--`)
-- **Command Injection**: execution of an OS command with user-controlled argument (`127.0.0.1 & calc.exe`)
-- **LDAP Injection**: user search filter not escaped (`*)(uid=*)`)
-- **XML Injection (XXE)**: XML parser vulnerable to external entity injection (`<!DOCTYPE foo ...>`)
-- **NoSQL Injection**: uncontrolled parameter in a JSON MongoDB/CosmosDB query (`{$ne:null}`)
-- **Path Traversal**: unchecked file path (`..\..\Windows\win.ini`)
-- **OS Path Injection**: execution of binary from user-supplied path (`c:\windows\system32\notepad.exe`)
-- **Desktop XSS**: unescaped HTML content in a WebView (`<script>alert('xss')</script>`)
-- **Expression Language Injection**: dynamic executable expression (`x == 1 || true`)
+# DA01 – Injections (FR)
 
-Each field comes with a **ready-to-use payload**, and each attack can be triggered with a button.
+**Objectif.** Présenter 15 sinks d’injection en contexte desktop. L’UI appelle `InjectionVuln.cs` pour une détection **SAST** fiable.
+
+## Exécution
+- Build & run, ouvre **DA01 – Injections**.
+- Utilise les payloads par défaut ou les tiens ; certains cas génèrent volontairement des erreurs (toujours utiles côté SAST).
+
+## Cas couverts (15)
+| # | Carte UI | Méthode | Contenu démontré | CWE (indicatif) | Indices SAST |
+|---|----------|--------|------------------|------------------|--------------|
+| 1 | Injection SQL | `RunSqlInjection(input)` | Concaténation dans une requête | CWE-89 | `SqlCommand.CommandText` + concat |
+| 2 | Injection de commande OS | `RunCommandInjection(payload)` | `cmd.exe /C` avec entrée utilisateur | CWE-78 | `Process.Start("cmd.exe", …)` |
+| 3 | Injection LDAP | `RunLdapInjection(filter)` | `DirectorySearcher.Filter` non sécurisé | CWE-90 | Concaténation du filtre |
+| 4 | Injection XPath | `RunXpathInjection(xpath)` | XPath utilisateur dans `SelectNodes` | CWE-643 | `SelectNodes(user)` |
+| 5 | XXE / Injection XML | `RunXxeInjection(xml)` | DTD + résolveur activés | CWE-611 | `DtdProcessing.Parse`, `XmlResolver` |
+| 6 | Injection XSLT | `RunXsltInjection(xsl)` | Feuille XSL contrôlée par l’utilisateur | CWE-94/917 | `XslCompiledTransform.Load` |
+| 7 | Injection de chemin OS | `RunOsPathInjection(path)` | Écriture sur chemin utilisateur | CWE-22 | `File.WriteAllText` |
+| 8 | Injection d’expression | `RunExpressionInjection(expr)` | `DataTable.Compute(expr)` | CWE-94 | Éval d’expression |
+| 9 | Injection Regex / ReDoS | `RunRegexInjection(pattern,sample)` | Regex utilisateur compilée/exécutée | CWE-1333 | `new Regex(user)` |
+|10 | Injection d’arguments de process | `RunProcessArgsInjection(exe,args)` | Lancement d’outil externe | CWE-88/78 | `ProcessStartInfo` |
+|11 | Injection de formule CSV | `RunCsvFormulaInjection(cell)` | Cellule dangereuse (=,+,-,@) | CWE-1236 | CSV en clair |
+|12 | Injection PowerShell | `RunPowershellInjection(ps)` | `powershell.exe -Command` | CWE-78 | `Process.Start("powershell.exe")` |
+|13 | Injection XAML | `RunXamlInjection(xaml)` | `XamlReader.Parse` sur XAML | CWE-915/94 | `XamlReader.Parse` |
+|14 | Injection de type (Reflection) | `RunReflectionInjection(type)` | `Type.GetType` + instance | CWE-470 | `Activator.CreateInstance` |
+|15 | Injection via chargement d’assembly | `RunAssemblyLoadInjection(path)` | `Assembly.LoadFrom` | CWE-114 | Chargement dynamique |
+
+## Bonnes pratiques (résumé)
+- **Paramétrer** les requêtes ; listes d’autorisation strictes.
+- Pas d’entrée utilisateur transmise au **shell/PowerShell**.
+- Désactiver DTD/XmlResolver ; ne pas parser XAML non fiable.
+- Normaliser/sécuriser les chemins ; répertoires dédiés.
+- Éviter le code/expr/réflexion dynamiques sur entrées non fiables.
+
 
 ---
 
@@ -58,118 +98,231 @@ Each field comes with a **ready-to-use payload**, and each attack can be trigger
 > ?? This code is intentionally vulnerable, for testing and educational use only!**
 
 
-# DA02 – Broken Authentication & Session Management
+## DA02 – Broken Authentication & Session Management (WPF, .NET Framework 4.7.2)
 
-## ENGLISH
+**Purpose.** This window demonstrates intentionally vulnerable authentication/session patterns. The UI calls centralized sinks in `AuthSessionVuln.cs` so SAST can flag CWE issues clearly.
 
-This module demonstrates authentication/session vulnerabilities:
-- **Hardcoded password**: password in code
-- **Global session variable**: session state shared and static
-- **No session expiration**: sessions never expire
-- **Predictable session token**: tokens generated using timestamps
-- **Session reuse**: session/token not invalidated after logout
-- **Authentication bypass**: logic error allows access without auth
-- **Poor multi-user management**: session shared between users
-- **No brute force protection**: unlimited login attempts
+### How to run
+- Build and start the app, open **DA02 – Broken Authentication**.
+- Each card has inputs, an action button, and inline feedback (some also show a popup).
+
+### Exposed vulnerabilities
+| # | UI Card | Method | What it shows | Likely CWE | SAST Hints |
+|---|---------|--------|---------------|------------|------------|
+| 1 | Password in Cleartext | `HardcodedPassword()` | Hardcoded password/secret | CWE-798 | Hardcoded credential/secret string |
+| 2 | Weak Token Generation | `PredictableToken()` | Predictable token (clock + `Random`) | CWE-330/338 | `System.Random` used for tokens |
+| 3 | No Brute Force Protection | `NoBruteForceProtection()` | Unlimited login attempts | CWE-307 | No throttling/lockout |
+| 4 | Session Fixation | `SessionFixation(id)` | Accepts attacker-provided session ID | CWE-384 | No session regeneration |
+| 5 | Missing MFA + MD5 | `LoginWithoutMfa(u,p)` | No MFA, weak hash (MD5) | CWE-327/306/287 | `MD5.Create()` |
+| 6 | Global Session | `GlobalSession()` | Single in-memory global session | CWE-613 (approx) | Global static state |
+| 7 | No Session Expiration | `NoSessionExpiration()` | No TTL/expiry | CWE-613 | No timeout/invalidation |
+| 8 | Reuse Session Across Users | `ReuseSession()` | Same ID reused cross users | CWE-384/613 | Shared SID |
+| 9 | Weak Session ID | `WeakSessionIdGeneration()` | Short, low-entropy SID | CWE-330/331 | 8-char base36 + `Random` |
+|10 | Predictable Reset Token | `InsecureResetToken(u)` | Base64(username:ticks) | CWE-640/330 | Derivable from public data |
+|11 | Remember-Me plaintext | `RememberMePersist(u)` | Long-lived token in public folder | CWE-922/312 | Plaintext token on disk |
+|12 | Insecure TLS Login | `InsecureTlsLogin(url,u,p)` | Trust-all TLS + POST creds | CWE-295 | `ServerCertificateValidationCallback => true` |
+|13 | Insecure Deserialization | `InsecureDeserializeSession(b64)` | `BinaryFormatter` deserialization | CWE-502 | `BinaryFormatter` usage |
+|14 | AES-ECB for Session | `EncryptSessionWithEcb(json)` | AES in ECB + hardcoded key | CWE-327 | `AesManaged` + `Mode=ECB` |
+|15 | Log Sensitive Token | `LogSensitiveToken(tok)` | Token logged to temp file | CWE-532 | Logging of secrets |
+
+### Safer version (for contrast)
+- Regenerate session ID after login; enforce expiry/idle timeouts.
+- MFA; password hashing with PBKDF2/bcrypt/scrypt/Argon2 + unique salt.
+- Cryptographic randomness for tokens/IDs (`RandomNumberGenerator`).
+- Never trust-all TLS; use proper certificate validation.
+- Avoid `BinaryFormatter`; prefer safe serializers with strict validation.
+- Don’t log secrets/tokens; redact sensitive fields.
 
 ---
 
 ## FRANÇAIS
 
-Ce module démontre des vulnérabilités d’authentification/session :
-- **Mot de passe codé en dur**?: secret présent dans le code source
-- **Session globale**?: variable partagée et statique
-- **Absence d’expiration de session**?: session jamais invalidée
-- **Jeton prévisible**?: tokens générés via timestamp
-- **Réutilisation de session**?: token non invalidé après déconnexion
-- **Bypass Auth**?: erreur logique, accès sans authentification
-- **Mauvaise gestion multi-utilisateur**?: session partagée entre comptes
-- **Pas de protection brute force**?: nombre illimité de tentatives
+**Objectif.** Démontrer des patterns d’authentification/session volontairement vulnérables.  
+L’UI appelle des sinks centralisés dans `AuthSessionVuln.cs` afin que les outils **SAST** identifient nettement les CWE.
 
----
+### Exécution
+- Build la solution (.NET Framework 4.7.2) et ouvre **DA02 – Broken Authentication**.
+- Chaque carte propose des champs, un bouton d’action et un feedback (certaines affichent un `MessageBox`).
+
+### Vulnérabilités exposées
+| # | Carte UI | Méthode | Contenu démontré | CWE (indicatif) | Indices SAST courants |
+|---|----------|---------|------------------|------------------|-----------------------|
+| 1 | Password in Cleartext | `HardcodedPassword()` | Secret/mot de passe **en dur** | CWE-798 | Chaînes “password/secret” codées en dur |
+| 2 | Weak Token Generation | `PredictableToken()` | Jeton **prévisible** (horloge + `Random`) | CWE-330/338 | `System.Random` pour secret/token |
+| 3 | No Brute Force Protection | `NoBruteForceProtection()` | Aucune limite d’essais | CWE-307 | Absence de lockout/throttling |
+| 4 | Session Fixation | `SessionFixation(id)` | ID de session imposé par l’attaquant | CWE-384 | Pas de régénération après login |
+| 5 | Missing MFA + MD5 | `LoginWithoutMfa(u,p)` | Pas de MFA + hash **MD5** | CWE-327/306/287 | `MD5.Create()` |
+| 6 | Global Session | `GlobalSession()` | Session globale en mémoire | CWE-613 (approx) | État statique partagé |
+| 7 | No Session Expiration | `NoSessionExpiration()` | Aucune expiration/TTL | CWE-613 | Pas de timeout/invalidation |
+| 8 | Reuse Session Across Users | `ReuseSession()` | Même ID réutilisé entre users | CWE-384/613 | Partage d’ID |
+| 9 | Weak Session ID | `WeakSessionIdGeneration()` | SID court/faible entropie | CWE-330/331 | 8 chars base36 + `Random` |
+|10| Predictable Reset Token | `InsecureResetToken(u)` | Base64(username:ticks) | CWE-640/330 | Jeton dérivable |
+|11| Remember-Me plaintext | `RememberMePersist(u)` | Token longue durée en clair | CWE-922/312 | Écriture de secrets en clair |
+|12| Insecure TLS Login | `InsecureTlsLogin(url,u,p)` | TLS **trust-all** + POST creds | CWE-295 | Callback `ServerCertificateValidationCallback => true` |
+|13| Insecure Deserialization | `InsecureDeserializeSession(b64)` | `BinaryFormatter` | CWE-502 | Utilisation BinaryFormatter |
+|14| AES-ECB for Session | `EncryptSessionWithEcb(json)` | AES en **ECB**, clé en dur | CWE-327 | `AesManaged` + `Mode=ECB` |
+|15| Log Sensitive Token | `LogSensitiveToken(tok)` | Jeton loggé (clair) | CWE-532 | Secrets en logs |
+
+### Bonnes pratiques (version « safe »)
+- Régénérer l’ID de session après login, ajouter **expiration** et **idle timeout**.
+- **MFA**, et hachage mots de passe avec PBKDF2/bcrypt/scrypt/Argon2 (+sel unique).
+- Générer les tokens/SID avec `RandomNumberGenerator`.
+- Ne jamais désactiver la vérification TLS.
+- Éviter `BinaryFormatter`; utiliser des sérialiseurs sûrs avec validation stricte.
+- Ne pas journaliser de secrets (masking/redaction).
+
+> **But pédagogique**: centraliser les sinks dans `AuthSessionVuln.cs` pour que les outils SAST ressortent les CWE immédiatement, tout en gardant l’UI simple et localisable (EN/FR).
 
 > ?? Code volontairement vulnérable, usage pédagogique et test SAST/SCA uniquement?!
 
-# DA03 – Sensitive Data Exposure / Data Protection
+# DA03 – Sensitive Data Exposure (WPF, .NET Framework 4.7.2)
 
-## ENGLISH
+**Purpose.** Demonstrate common sensitive-data exposure mistakes on desktop. The UI calls centralized sinks in `DataExposureVuln.cs` so SAST can reliably flag CWE issues.
 
-This module demonstrates practical ways sensitive data can be exposed or poorly protected in a .NET desktop application.
+## How to run
+- Build and start the app, open **DA03 – Sensitive Data Exposure**.
+- Try each card with default values; observe popups and inline feedback. Use an intercepting proxy (Burp/ZAP) to see HTTP leaks.
 
-**Included scenarios:**
-1. **Sensitive data in memory:** secrets are stored in RAM and never cleared.
-2. **Unencrypted CSV export:** sensitive data saved in local CSV file with no encryption.
-3. **Sensitive data in logs:** secrets, credentials or PII written in cleartext to application logs.
-4. **Public file sharing:** secret data written to a public folder.
-5. **Clipboard exposure:** sensitive information copied to the system clipboard and may be read by other apps or users.
-6. **Weak “encryption”:** data is “protected” using reversible algorithms like base64.
-7. **Hardcoded secret:** a sensitive value is present in code and revealed by the interface.
-8. **Sensitive data in temp file:** secret is written to a temporary file.
-9. **Sensitive data in window title:** secret is displayed in the window title.
-10. **Verbose error with secret:** exception or error includes sensitive value in its message.
+## Exposed vulnerabilities
+| # | UI Card | Method(s) | What it shows | Likely CWE | SAST Hints |
+|---|---------|-----------|---------------|------------|------------|
+| 1 | Sensitive Data in Memory | `StoreInMemory(data)` | Secret kept in RAM, never cleared | CWE-522 | Field retains sensitive value |
+| 2 | Export Data in Plain CSV | `ExportCsvCleartext(secret,path)` | Unencrypted CSV on disk | CWE-311/312 | `File.WriteAllText` ? `.csv` |
+| 3 | Logging Sensitive Data | `LogSensitive(data)` | Plaintext logging of secrets | CWE-532 | Secrets/PII in logs |
+| 4 | Public File Share | `WritePublicShare(data,path)` | Write secret to public/shared path | CWE-200/538 | Public/common path usage |
+| 5 | Clipboard Data Exposure | `ClipboardCopySensitive(data)` | Copy secret to clipboard | CWE-200 | `Clipboard.SetText` |
+| 6 | Weak Crypto (Base64) | `WeakEncryptionBase64(data)` | Base64 as “encryption” | CWE-327 | `Convert.ToBase64String` |
+| 7 | Hardcoded Secret/Key | `HardcodedKey()`, `ExposedSecret()` | Constants embedded in code | CWE-798/312 | Identifiers like key/secret |
+| 8 | Sensitive Temp File | `WriteTempSensitiveFile(data)` | Secret in temp file | CWE-312 | `Path.GetTempFileName` + write |
+| 9 | Sensitive in Window Title | `LeakInWindowTitle(window,secret)` | Secret in UI/title bar | CWE-200 | `window.Title = secret` |
+|10 | Verbose Exception With Secret | `VerboseError(data)` | Error/stacktrace leaks data | CWE-209 | `ex.ToString()` surfaced |
+|11 | Insecure HTTP Transport (POST) | `InsecureTransport(url,data)` | POST over HTTP / trust-all TLS | CWE-319/295 | `WebClient.UploadString` to `http://`, cert callback |
+|12 | Store Cleartext on Disk | `StoreCleartext(data)` | Plaintext file persisted | CWE-312 | `File.WriteAllText` |
+|13 | Weak Encryption (ROT13) | `WeakEncryptionRot13(data)` | Obfuscation, not encryption | CWE-327 | ROT13 routine |
+|14 | Insecure HTTP Transport (GET with query) | `InsecureTransportGet(url,query)` | Secrets in URL query string | CWE-319/200 | `HttpWebRequest` + `http://` query |
+|15 | Plaintext Connection String (.config) | `WriteConnectionStringConfig()` | Credentials stored in clear config | CWE-312 | `.config` write with creds |
+|16 | Windows Registry (plaintext) | `WriteSecretToRegistry(name,val)` | Secret written to HKCU in clear | CWE-312/200 | `Registry.*.SetValue` |
+|17 | Weak Encryption (DES-ECB) | `WeakEncryptionDes(data)` | DES-ECB + hardcoded key | CWE-327 | `DESCryptoServiceProvider` + `ECB` |
 
-Each scenario provides an example payload and can be triggered from the UI.  
-**The code is intentionally vulnerable for training, awareness, and security tool testing.**
-
----
-
-## FRANÇAIS
-
-Ce module présente des exemples concrets d’exposition ou de mauvaise protection de données sensibles dans une application desktop .NET.
-
-**Scénarios inclus?:**
-1. **Données sensibles en mémoire?:** des secrets restent stockés en RAM et ne sont jamais effacés.
-2. **Export CSV non chiffré?:** des données sensibles sont sauvegardées dans un fichier CSV local sans chiffrement.
-3. **Données sensibles dans les logs?:** secrets, identifiants ou PII sont écrits en clair dans les journaux applicatifs.
-4. **Partage de fichiers publics?:** une donnée confidentielle est écrite dans un dossier accessible à tous.
-5. **Fuite via le presse-papiers?:** des informations sensibles sont copiées dans le presse-papiers système, et peuvent être lues par d’autres applications ou utilisateurs.
-6. **Chiffrement faible ou inexistant?:** la donnée est “protégée” avec des algorithmes réversibles (base64).
-7. **Secret codé en dur?:** une valeur sensible est présente dans le code et révélée par l’interface.
-8. **Donnée sensible dans un fichier temporaire?:** un secret est écrit dans un fichier temp.
-9. **Secret dans le titre de la fenêtre?:** une information sensible est affichée dans le titre de la fenêtre.
-10. **Exception verbeuse avec secret?:** une erreur ou exception inclut la valeur sensible dans son message.
-
-Chaque scénario inclut un exemple de payload et peut être testé depuis l’interface.  
-**Le code est volontairement vulnérable pour la formation, la sensibilisation et le test d’outils de sécurité.**
-
-
-# DA04 – Insecure Communication & Unsafe Interprocess/External Interactions
-
-## ENGLISH
-
-This module demonstrates insecure communications and unsafe external or interprocess interactions in a desktop application.
-
-**Included scenarios:**
-- **No TLS/SSL on network communication**: sending data to a server in cleartext (HTTP).
-- **Accepts invalid SSL certificates**: disables certificate validation, allowing MiTM.
-- **Unsafe inter-process communication (IPC)**: named pipes, files, or other IPC channels without authentication.
-- **Command/Process injection via IPC**: user-controlled data executed as a command or process.
-- **Unprotected named pipe/socket**: creates or connects to IPC channels with no ACLs.
-- **Dangerous service/port exposed**: opens local ports or services without authentication.
-- **Unauthenticated communication**: sends requests or data without credentials or session.
-- **Secrets sent in clear over network**: API keys, passwords, etc. transmitted on HTTP or insecure protocols.
-
-Each scenario provides a typical payload and can be triggered from the interface.  
-**This code is intentionally vulnerable for training and detection with SAST/DAST tools.**
+## Safer version (for contrast)
+- Enforce TLS and proper certificate validation; never send secrets over HTTP.
+- Encrypt at rest (AES-GCM/ChaCha20-Poly1305) with secure key management (no hardcoding).
+- Don’t log secrets; redact and minimize logs.
+- Avoid storing secrets in temp files, clipboard, or UI.
+- Clear sensitive memory (explicit zeroing / `SecureString` patterns).
 
 ---
 
-## FRANÇAIS
+# DA03 – Exposition de Données Sensibles (WPF, .NET Framework 4.7.2)
 
-Ce module illustre des communications non sécurisées et des interactions inter-processus ou externes risquées dans une application desktop.
+**Objectif.** Illustrer des fuites de données sensibles côté desktop. L’UI appelle des sinks centralisés dans `DataExposureVuln.cs` pour faciliter la détection **SAST** des CWE.
 
-**Scénarios inclus :**
-- **Pas de TLS/SSL sur la communication réseau**?: envoi de données en clair (HTTP).
-- **Accepte les certificats SSL invalides**?: désactivation de la vérification des certificats, vulnérable au MiTM.
-- **IPC non sécurisé**?: pipes nommés, fichiers ou autres canaux IPC sans authentification.
-- **Injection de commande/processus via IPC**?: données utilisateur exécutées comme commande ou process.
-- **Canal/socket non protégé**?: création ou connexion à un pipe/socket sans ACL.
-- **Service/port dangereux exposé**?: ouverture de ports/services locaux sans authentification.
-- **Communication non authentifiée**?: envoi de requêtes ou données sans credentials/session.
-- **Secrets envoyés en clair**?: mots de passe, API keys, etc. sur HTTP ou protocoles non chiffrés.
+## Exécution
+- Build la solution et ouvre **DA03 – Sensitive Data Exposure**.
+- Lance chaque carte avec les valeurs par défaut. Utilise un proxy (Burp/ZAP) pour observer l’HTTP.
 
-Chaque scénario présente un payload-type et peut être déclenché depuis l’interface.  
-**Le code est intentionnellement vulnérable, usage formation et outils SAST/DAST.**
+## Vulnérabilités exposées
+| # | Carte UI | Méthode(s) | Contenu démontré | CWE (indicatif) | Indices SAST |
+|---|----------|------------|------------------|------------------|--------------|
+| 1 | Données sensibles en mémoire | `StoreInMemory(data)` | Secret conservé en RAM (non nettoyé) | CWE-522 | Champ stockant le secret |
+| 2 | Export CSV en clair | `ExportCsvCleartext(secret,path)` | CSV non chiffré sur disque | CWE-311/312 | `File.WriteAllText` ? `.csv` |
+| 3 | Journalisation de données sensibles | `LogSensitive(data)` | Logs en clair | CWE-532 | Secrets/PII dans logs |
+| 4 | Partage de fichier public | `WritePublicShare(data,path)` | Écriture de secret dans un dossier partagé | CWE-200/538 | Chemin public/commun |
+| 5 | Fuite via le presse-papiers | `ClipboardCopySensitive(data)` | Copie du secret dans le presse-papiers | CWE-200 | `Clipboard.SetText` |
+| 6 | Crypto faible (Base64) | `WeakEncryptionBase64(data)` | Base64 présenté comme “chiffrement” | CWE-327 | `Convert.ToBase64String` |
+| 7 | Secret/clé codé(e) en dur | `HardcodedKey()`, `ExposedSecret()` | Constantes sensibles dans le code | CWE-798/312 | Identifiants suspects : key/secret |
+| 8 | Fichier temporaire sensible | `WriteTempSensitiveFile(data)` | Secret dans un fichier temp | CWE-312 | `Path.GetTempFileName` + write |
+| 9 | Secret dans le titre de la fenêtre | `LeakInWindowTitle(window,secret)` | Secret affiché dans l’UI | CWE-200 | `window.Title = secret` |
+|10 | Exception verbeuse avec secret | `VerboseError(data)` | Message/stack trace divulgue des données | CWE-209 | `ex.ToString()` en UI |
+|11 | Transport HTTP non sécurisé (POST) | `InsecureTransport(url,data)` | POST en HTTP / TLS trust-all | CWE-319/295 | `WebClient.UploadString` vers `http://`, callback cert |
+|12 | Écriture en clair sur disque | `StoreCleartext(data)` | Fichier en clair | CWE-312 | `File.WriteAllText` |
+|13 | Chiffrement faible (ROT13) | `WeakEncryptionRot13(data)` | Obfuscation, pas chiffrement | CWE-327 | Routine ROT13 |
+|14 | Transport HTTP non sécurisé (GET avec query) | `InsecureTransportGet(url,query)` | Secrets dans l’URL | CWE-319/200 | `HttpWebRequest` + `http://` query |
+|15 | Chaîne de connexion en clair (.config) | `WriteConnectionStringConfig()` | Identifiants stockés en clair | CWE-312 | Écriture `.config` avec creds |
+|16 | Registre Windows (en clair) | `WriteSecretToRegistry(name,val)` | Secret sous HKCU en clair | CWE-312/200 | `Registry.*.SetValue` |
+|17 | Chiffrement faible (DES-ECB) | `WeakEncryptionDes(data)` | DES-ECB + clé en dur | CWE-327 | `DESCryptoServiceProvider` + `ECB` |
+
+## Bonnes pratiques (version « safe »)
+- Forcer **TLS** avec vérification stricte ; ne jamais envoyer de secrets en HTTP.
+- Chiffrer au repos (AES-GCM/ChaCha20-Poly1305) ; gestion de clés sécurisée (pas de clés en dur).
+- Ne pas logguer de secrets ; **redacter** et minimiser les logs.
+- Éviter presse-papiers, fichiers temporaires et UI pour des secrets.
+- Nettoyer explicitement la mémoire sensible (`SecureString`/effacement contrôlé).
+
+
+
+# DA04 – Insecure Communication & Unsafe Interprocess/External Interactions (WPF, .NET Framework 4.7.2)
+
+**Purpose.** Demonstrate real-world insecure communication, IPC, and unsafe external interactions from a desktop app.  
+The UI calls centralized sinks in `CommVuln.cs`, which helps SAST flag issues consistently.
+
+## How to run
+- Build and start the app, open **DA04 – Insecure Communication & Unsafe Interactions**.
+- Try each card with defaults; observe popups/inline feedback. Use a proxy (Burp/ZAP) or a local socket/FTP/SOAP endpoint to see traffic.
+
+## Exposed vulnerabilities (15)
+| # | UI Card | Method | What it shows | Likely CWE | SAST Hints |
+|---|---------|--------|---------------|------------|------------|
+| 1 | Plain HTTP Request | `HttpPostInsecure(url)` | POST over HTTP, trust-all TLS, legacy protocols | CWE-319/295 | `WebClient.UploadString("http://")`, `ServerCertificateValidationCallback`, `SecurityProtocol = Ssl3|Tls|Tls11` |
+| 2 | Plain TCP Socket | `TcpSendPlain(host,port,data)` | Unencrypted TCP payload + creds | CWE-319 | `TcpClient` + `GetStream().Write` |
+| 3 | UDP Packet | `UdpSendPlain(host,port,data)` | Unencrypted UDP datagrams | CWE-319 | `UdpClient.Send` |
+| 4 | WebSocket (no encryption) | `WebSocketSendInsecure(wsUrl,data)` | `ws://` endpoint (simulated) | CWE-319 | Literal `ws://` usage |
+| 5 | Named Pipe (no ACL) | `NamedPipeWriteInsecure(name,data)` | IPC without access control | CWE-284/306 | `NamedPipeClientStream` without security |
+| 6 | Insecure File Drop | `WriteSharedFile(folder,file,content)` | Secrets dropped to shared/public folder | CWE-200/538 | `File.WriteAllText` to public path |
+| 7 | Unsafe Command Execution | `ExecuteCommandUnsafe(payload)` | Shell/command injection via `/C` | CWE-78 | `Process.Start("cmd.exe", "/C "+payload)` |
+| 8 | Unsafe DllImport/COM | `NativeBeep()` | Native call without validation | CWE-676/829 | `DllImport("user32.dll")` |
+| 9 | Clipboard Broadcast | `ClipboardCopy(data)` | Secret copied to global clipboard | CWE-200 | `Clipboard.SetText` |
+| 10 | SMTP Mail (no TLS) | `SmtpSendNoTls(host,port,...)` | Cleartext email submission | CWE-319 | `SmtpClient.EnableSsl=false` |
+| 11 | Registry Write (no ACL) | `RegistryWriteInsecure(line)` | Secret written to HKCU in clear | CWE-276/312 | `Registry.CurrentUser.CreateSubKey().SetValue` |
+| 12 | Temp File for IPC | `TempIpcWrite(data)` | Plaintext secret in %TEMP% | CWE-312 | `Path.GetTempPath` + `File.WriteAllText` |
+| 13 | FTP Upload (no TLS) | `FtpUploadInsecure(ftpUrl,user,pw,content)` | FTP transfer in clear | CWE-319 | `FtpWebRequest`, `EnableSsl=false`, `Credentials` |
+| 14 | SOAP/XML over HTTP (clear) | `SoapOverHttpInsecure(url,action,xml)` | SOAP over HTTP + `SOAPAction` | CWE-319 | `Content-Type: text/xml`, `UploadString("http://")` |
+| 15 | Insecure Binary Deserialization | `InsecureDeserializeBinary(base64)` | BinaryFormatter on untrusted data | CWE-502 | `BinaryFormatter.Deserialize` |
+
+## Safer version (for contrast)
+- Always use **TLS** with strict certificate validation; avoid trust-all callbacks and legacy protocol flags.
+- Secure IPC (Named Pipes with ACLs; authenticated channels).
+- Sanitize any input that reaches process execution; avoid `cmd.exe /C`.
+- Don’t write secrets to public shares/registry/temp/clipboard; apply least privilege and encrypt at rest.
+- Avoid `BinaryFormatter`; use safe serializers with strict type binding and validation.
+
+---
+
+# DA04 – Communications & Interactions non sécurisées (WPF, .NET Framework 4.7.2)
+
+**Objectif.** Illustrer des communications/IPC non sécurisées et des interactions externes risquées côté desktop.  
+L’UI appelle des sinks centralisés dans `CommVuln.cs` pour faciliter la détection **SAST**.
+
+## Exécution
+- Build et lance l’app, ouvre **DA04 – Communications & Interactions non sécurisées**.
+- Teste chaque carte ; observe les popups/retours inline. Utilise un proxy (Burp/ZAP) ou des endpoints locaux (socket/FTP/SOAP) pour voir le trafic.
+
+## Vulnérabilités exposées (15)
+| # | Carte UI | Méthode | Contenu démontré | CWE (indicatif) | Indices SAST |
+|---|----------|--------|------------------|------------------|--------------|
+| 1 | Requête HTTP non sécurisée | `HttpPostInsecure(url)` | POST en HTTP, TLS trust-all, protocoles legacy | CWE-319/295 | `WebClient.UploadString("http://")`, `ServerCertificateValidationCallback`, `SecurityProtocol = Ssl3|Tls|Tls11` |
+| 2 | Socket TCP sans TLS | `TcpSendPlain(host,port,data)` | Données TCP en clair + creds | CWE-319 | `TcpClient` + `Write` |
+| 3 | Paquet UDP | `UdpSendPlain(host,port,data)` | Données UDP en clair | CWE-319 | `UdpClient.Send` |
+| 4 | WebSocket non chiffré | `WebSocketSendInsecure(wsUrl,data)` | Usage `ws://` (simulation) | CWE-319 | Littéral `ws://` |
+| 5 | NamedPipe sans ACL | `NamedPipeWriteInsecure(name,data)` | IPC sans contrôle d’accès | CWE-284/306 | `NamedPipeClientStream` sans sécurité |
+| 6 | Dépôt fichier non sécurisé | `WriteSharedFile(folder,file,content)` | Secret dans un dossier partagé/public | CWE-200/538 | Écriture fichier public |
+| 7 | Exécution de commande non filtrée | `ExecuteCommandUnsafe(payload)` | Injection via `/C` | CWE-78 | `Process.Start("cmd.exe", "/C "+payload)` |
+| 8 | DllImport/COM risqué | `NativeBeep()` | Appel natif sans validation | CWE-676/829 | `DllImport("user32.dll")` |
+| 9 | Diffusion presse-papiers | `ClipboardCopy(data)` | Secret copié dans le presse-papiers global | CWE-200 | `Clipboard.SetText` |
+| 10 | SMTP sans TLS | `SmtpSendNoTls(host,port,...)` | Envoi email en clair | CWE-319 | `EnableSsl=false` |
+| 11 | Écriture registre | `RegistryWriteInsecure(line)` | Secret sous HKCU en clair | CWE-276/312 | `CreateSubKey().SetValue` |
+| 12 | Fichier temporaire IPC | `TempIpcWrite(data)` | Secret en clair dans %TEMP% | CWE-312 | `Path.GetTempPath` + `WriteAllText` |
+| 13 | Upload FTP (sans TLS) | `FtpUploadInsecure(ftpUrl,user,pw,content)` | Transfert FTP en clair | CWE-319 | `FtpWebRequest`, `EnableSsl=false`, `Credentials` |
+| 14 | SOAP/XML sur HTTP (clair) | `SoapOverHttpInsecure(url,action,xml)` | SOAP en HTTP + `SOAPAction` | CWE-319 | `Content-Type: text/xml`, `UploadString("http://")` |
+| 15 | Désérialisation binaire non sécurisée | `InsecureDeserializeBinary(base64)` | BinaryFormatter sur données non fiables | CWE-502 | `BinaryFormatter.Deserialize` |
+
+## Bonnes pratiques (version « safe »)
+- Toujours utiliser **TLS** avec validation stricte ; proscrire les callbacks trust-all et les protocoles obsolètes.
+- Sécuriser l’IPC (ACL sur NamedPipe ; canaux authentifiés).
+- Filtrer les entrées avant exécution de processus ; éviter `cmd.exe /C`.
+- Ne pas stocker de secrets en clair (partages/registre/temp/presse-papiers) ; chiffrer et appliquer le moindre privilège.
+- Bannir `BinaryFormatter` ; privilégier des sérialiseurs sûrs avec validation stricte.
+
 
 
 # DA05 – Insufficient Authorization / Access Control (.NET Patterns)

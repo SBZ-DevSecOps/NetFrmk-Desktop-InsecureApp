@@ -1,230 +1,159 @@
-﻿using Microsoft.Win32;
-using NetFrmk_Desktop_InsecureApp.Vulnerabilities;
+﻿using NetFrmk_Desktop_InsecureApp.Vulnerabilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net;
-using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NetFrmk_Desktop_InsecureApp
 {
-    /// <summary>
-    /// Interaction logic for DA06ResourceWindow.xaml
-    /// </summary>
     public partial class DA06ResourceWindow : Window
     {
+        private string _lang = "en";
+
         private readonly Dictionary<string, Tuple<string, string>> labels = new Dictionary<string, Tuple<string, string>>
         {
             { "Title", Tuple.Create("DA06 – Insecure Resources & Dependency Management", "DA06 – Gestion des ressources et dépendances non sécurisées") },
-            { "Intro", Tuple.Create("This module demonstrates insecure dependency management and resource loading scenarios in .NET desktop apps.", "Ce module montre des scénarios d'utilisation de dépendances et ressources non sécurisées dans les applications .NET desktop.") },
+            { "Intro", Tuple.Create("Resource loading and dependency management anti-patterns for SAST demos.", "Anti-patterns de chargement de ressources et gestion de dépendances pour démos SAST.") },
 
-            { "VulnDllLabel", Tuple.Create("Call Vulnerable DLL", "Appel DLL vulnérable") },
-            { "VulnDllDesc", Tuple.Create("Loads and executes a method from an outdated or vulnerable DLL.", "Charge et exécute une méthode depuis une DLL vulnérable/obsolète.") },
-            { "VulnDllButton", Tuple.Create("Test Vuln DLL", "Tester DLL vulnérable") },
+            { "VulnDllLabel", Tuple.Create("1. Call Vulnerable DLL", "1. Appel DLL vulnérable") },
+            { "VulnDllDesc",  Tuple.Create("Loads and invokes a method from an outdated or vulnerable DLL.", "Charge et invoque une méthode depuis une DLL obsolète/vulnérable.") },
+            { "VulnDllButton",Tuple.Create("Test Vuln DLL", "Tester DLL vulnérable") },
 
-            { "DynamicLoadLabel", Tuple.Create("Dynamic Assembly Load", "Chargement d'assembly dynamique") },
-            { "DynamicLoadDesc", Tuple.Create("Loads an assembly from a user-supplied path with no verification.", "Charge un assembly depuis un chemin sans vérification.") },
-            { "DynamicLoadButton", Tuple.Create("Test Dynamic Load", "Tester chargement dynamique") },
+            { "DynamicLoadLabel", Tuple.Create("2. Dynamic Assembly Load", "2. Chargement d'assembly dynamique") },
+            { "DynamicLoadDesc",  Tuple.Create("Loads an assembly from a user path without verification.", "Charge un assembly depuis un chemin utilisateur sans vérification.") },
+            { "DynamicLoadButton",Tuple.Create("Test Dynamic Load", "Tester chargement dynamique") },
 
-            { "LoadPluginsLabel", Tuple.Create("Load All Plugins (No Check)", "Charger tous les plugins (aucun contrôle)") },
-            { "LoadPluginsDesc", Tuple.Create("Loads and executes all .dll files from a directory with no whitelist.", "Charge et exécute tous les .dll d'un dossier sans whitelist.") },
-            { "LoadPluginsButton", Tuple.Create("Test Load Plugins", "Tester chargement plugins") },
+            { "LoadPluginsLabel", Tuple.Create("3. Load All Plugins (No Check)", "3. Charger tous les plugins (aucun contrôle)") },
+            { "LoadPluginsDesc",  Tuple.Create("Executes all .dll files from a directory (no whitelist).", "Exécute toutes les .dll d’un dossier (sans liste blanche).") },
+            { "LoadPluginsButton",Tuple.Create("Test Load Plugins", "Tester chargement plugins") },
 
-            { "DownloadExecLabel", Tuple.Create("Download & Execute DLL", "Télécharger & exécuter une DLL") },
-            { "DownloadExecDesc", Tuple.Create("Downloads a DLL from a remote URL and loads it without validation.", "Télécharge une DLL d'une URL et la charge sans validation.") },
-            { "DownloadExecButton", Tuple.Create("Test Download/Execute", "Tester téléchargement/exécution") },
+            { "DownloadExecLabel", Tuple.Create("4. Download & Execute DLL", "4. Télécharger & exécuter une DLL") },
+            { "DownloadExecDesc",  Tuple.Create("Downloads a DLL over HTTP and loads it unverified.", "Télécharge une DLL en HTTP et la charge sans vérification.") },
+            { "DownloadExecButton",Tuple.Create("Test Download/Execute", "Tester téléchargement/exécution") },
 
-            { "ManifestLabel", Tuple.Create("Load From Manifest", "Charger via manifest") },
-            { "ManifestDesc", Tuple.Create("Loads dependencies listed in a manifest.json file (modifiable by user).", "Charge des dépendances listées dans un manifest.json modifiable.") },
-            { "ManifestButton", Tuple.Create("Test Manifest Load", "Tester chargement manifest") },
+            { "ManifestLabel", Tuple.Create("5. Load From Manifest", "5. Charger via manifest") },
+            { "ManifestDesc",  Tuple.Create("Loads dependencies listed in user-editable manifest.json.", "Charge des dépendances listées dans un manifest.json modifiable.") },
+            { "ManifestButton",Tuple.Create("Test Manifest Load", "Tester chargement manifest") },
 
-            { "UserImportLabel", Tuple.Create("User Import DLL", "Import DLL utilisateur") },
-            { "UserImportDesc", Tuple.Create("Imports and loads a DLL chosen by the user (BYOVD scenario).", "Importe et charge une DLL choisie par l'utilisateur (BYOVD).") },
-            { "UserImportButton", Tuple.Create("Test User Import", "Tester import utilisateur") },
+            { "UserImportLabel", Tuple.Create("6. User Import DLL", "6. Import DLL utilisateur") },
+            { "UserImportDesc",  Tuple.Create("Imports and runs a user-chosen DLL (BYO).", "Importe et exécute une DLL choisie par l’utilisateur.") },
+            { "UserImportButton",Tuple.Create("Test User Import", "Tester import utilisateur") },
 
-            { "DllHijackingLabel", Tuple.Create("DLL Hijacking", "DLL hijacking") },
-            { "DllHijackingDesc", Tuple.Create("Launches an .exe, which will load any evil.dll present in the same directory.", "Lance un .exe, qui chargera toute evil.dll présente dans le dossier.") },
-            { "DllHijackingButton", Tuple.Create("Test DLL Hijacking", "Tester DLL hijacking") },
+            { "DllHijackingLabel", Tuple.Create("7. DLL Hijacking", "7. DLL hijacking") },
+            { "DllHijackingDesc",  Tuple.Create("Starts an EXE that may side-load evil.dll in its folder.", "Lance un EXE susceptible de charger evil.dll du même dossier.") },
+            { "DllHijackingButton",Tuple.Create("Test DLL Hijacking", "Tester DLL hijacking") },
 
-            { "VulnNugetLabel", Tuple.Create("Call Vulnerable NuGet Package", "Appel package NuGet vulnérable") },
-            { "VulnNugetDesc", Tuple.Create("Invokes a known-vulnerable function from a fake NuGet package.", "Appelle une fonction vulnérable d'un package NuGet fictif.") },
-            { "VulnNugetButton", Tuple.Create("Test NuGet Vulnerable", "Tester NuGet vulnérable") },
+            { "VulnNugetLabel", Tuple.Create("8. Vulnerable NuGet Package", "8. Package NuGet vulnérable") },
+            { "VulnNugetDesc",  Tuple.Create("Invokes an insecure API from a vulnerable package.", "Appelle une API non sûre d’un package vulnérable.") },
+            { "VulnNugetButton",Tuple.Create("Test Vulnerable NuGet", "Tester NuGet vulnérable") },
 
-            { "HttpResourceLabel", Tuple.Create("Download External Resource via HTTP", "Télécharger une ressource externe (HTTP)") },
-            { "HttpResourceDesc", Tuple.Create("Downloads and loads a config/script file over insecure HTTP.", "Télécharge et charge un fichier config/script via HTTP non sécurisé.") },
-            { "HttpResourceButton", Tuple.Create("Test HTTP Resource", "Tester ressource HTTP") },
+            { "HttpResourceLabel", Tuple.Create("9. Download External Resource (HTTP)", "9. Télécharger ressource externe (HTTP)") },
+            { "HttpResourceDesc",  Tuple.Create("Fetches config/script over HTTP and uses it.", "Récupère config/script en HTTP et l’utilise.") },
+            { "HttpResourceButton",Tuple.Create("Test HTTP Resource", "Tester ressource HTTP") },
 
-            { "PsScriptLabel", Tuple.Create("Dynamic PowerShell Script Execution", "Exécution dynamique de script PowerShell") },
-            { "PsScriptDesc", Tuple.Create("Executes a PowerShell command supplied by the user.", "Exécute une commande PowerShell fournie par l'utilisateur.") },
-            { "PsScriptButton", Tuple.Create("Test PowerShell", "Tester PowerShell") },
+            { "PsScriptLabel", Tuple.Create("10. Dynamic PowerShell Exec", "10. Exécution PowerShell dynamique") },
+            { "PsScriptDesc",  Tuple.Create("Executes a user-supplied PowerShell command.", "Exécute une commande PowerShell fournie par l’utilisateur.") },
+            { "PsScriptButton",Tuple.Create("Test PowerShell", "Tester PowerShell") },
 
-            { "RelativeDllLabel", Tuple.Create("Load DLL via Relative Path", "Charger DLL par chemin relatif") },
-            { "RelativeDllDesc", Tuple.Create("Loads a DLL using a relative path (prone to hijacking/planting).", "Charge une DLL par chemin relatif (risque de planting/hijack).") },
-            { "RelativeDllButton", Tuple.Create("Test Relative Path Load", "Tester chemin relatif") },
+            { "RelativeDllLabel", Tuple.Create("11. Load DLL via Relative Path", "11. Charger DLL par chemin relatif") },
+            { "RelativeDllDesc",  Tuple.Create("Loads DLL using relative path (planting risk).", "Charge une DLL via un chemin relatif (risque de planting).") },
+            { "RelativeDllButton",Tuple.Create("Test Relative Load", "Tester chargement relatif") },
+
+            { "PartialNameLabel", Tuple.Create("12. Load With Partial Name (GAC)", "12. Chargement par nom partiel (GAC)") },
+            { "PartialNameDesc",  Tuple.Create("Uses deprecated partial-name load (ambiguous).", "Utilise le chargement par nom partiel déprécié (ambigu).") },
+            { "PartialNameButton",Tuple.Create("Test Partial Name", "Tester nom partiel") },
+
+            { "ResolveHijackLabel", Tuple.Create("13. AssemblyResolve Hijack", "13. Détournement AssemblyResolve") },
+            { "ResolveHijackDesc",  Tuple.Create("Resolves missing assemblies from untrusted folder.", "Résout les dépendances manquantes depuis un dossier non fiable.") },
+            { "ResolveHijackButton",Tuple.Create("Hook & Trigger", "Accrocher & déclencher") },
+
+            { "XamlLoadLabel", Tuple.Create("14. Load XAML From URL", "14. Charger XAML depuis URL") },
+            { "XamlLoadDesc",  Tuple.Create("Downloads & parses remote XAML into objects.", "Télécharge & parse du XAML distant en objets.") },
+            { "XamlLoadButton",Tuple.Create("Test Remote XAML", "Tester XAML distant") },
+
+            { "NativeLoadLabel", Tuple.Create("15. Native LoadLibrary", "15. LoadLibrary natif") },
+            { "NativeLoadDesc",  Tuple.Create("P/Invoke LoadLibrary on arbitrary path.", "P/Invoke LoadLibrary sur un chemin arbitraire.") },
+            { "NativeLoadButton",Tuple.Create("Test Native Load", "Tester chargement natif") },
         };
 
-
-        private string _lang = "en";
         public DA06ResourceWindow()
         {
             InitializeComponent();
+            LanguageSelector.SelectedIndex = 0;
             SetLanguage(_lang);
+            SetPlaceholders();
         }
 
-        private void LanguageSelector_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void LanguageSelector_Changed(object sender, SelectionChangedEventArgs e)
         {
             _lang = LanguageSelector.SelectedIndex == 1 ? "fr" : "en";
             SetLanguage(_lang);
         }
 
-        private string GetLabel(string key, string lang)
-        {
-            return lang == "fr" ? labels[key].Item2 : labels[key].Item1;
-        }
-
+        private string L(string key) => (_lang == "fr") ? labels[key].Item2 : labels[key].Item1;
 
         private void SetLanguage(string lang)
         {
-            Title = GetLabel("Title", lang);
-            TitleText.Text = GetLabel("Title", lang);
-            IntroText.Text = GetLabel("Intro", lang);
+            Title = L("Title");
+            TitleText.Text = L("Title");
+            IntroText.Text = L("Intro");
 
-            VulnDllLabel.Text = GetLabel("VulnDllLabel", lang);
-            VulnDllDesc.Text = GetLabel("VulnDllDesc", lang);
-            VulnDllButton.Content = GetLabel("VulnDllButton", lang);
-
-            DynamicLoadLabel.Text = GetLabel("DynamicLoadLabel", lang);
-            DynamicLoadDesc.Text = GetLabel("DynamicLoadDesc", lang);
-            DynamicLoadButton.Content = GetLabel("DynamicLoadButton", lang);
-
-            LoadPluginsLabel.Text = GetLabel("LoadPluginsLabel", lang);
-            LoadPluginsDesc.Text = GetLabel("LoadPluginsDesc", lang);
-            LoadPluginsButton.Content = GetLabel("LoadPluginsButton", lang);
-
-            DownloadExecLabel.Text = GetLabel("DownloadExecLabel", lang);
-            DownloadExecDesc.Text = GetLabel("DownloadExecDesc", lang);
-            DownloadExecButton.Content = GetLabel("DownloadExecButton", lang);
-
-            ManifestLabel.Text = GetLabel("ManifestLabel", lang);
-            ManifestDesc.Text = GetLabel("ManifestDesc", lang);
-            ManifestButton.Content = GetLabel("ManifestButton", lang);
-
-            UserImportLabel.Text = GetLabel("UserImportLabel", lang);
-            UserImportDesc.Text = GetLabel("UserImportDesc", lang);
-            UserImportButton.Content = GetLabel("UserImportButton", lang);
-
-            DllHijackingLabel.Text = GetLabel("DllHijackingLabel", lang);
-            DllHijackingDesc.Text = GetLabel("DllHijackingDesc", lang);
-            DllHijackingButton.Content = GetLabel("DllHijackingButton", lang);
-
-            VulnNugetLabel.Text = GetLabel("VulnNugetLabel", lang);
-            VulnNugetDesc.Text = GetLabel("VulnNugetDesc", lang);
-            VulnNugetButton.Content = GetLabel("VulnNugetButton", lang);
-
-            HttpResourceLabel.Text = GetLabel("HttpResourceLabel", lang);
-            HttpResourceDesc.Text = GetLabel("HttpResourceDesc", lang);
-            HttpResourceButton.Content = GetLabel("HttpResourceButton", lang);
-
-            PsScriptLabel.Text = GetLabel("PsScriptLabel", lang);
-            PsScriptDesc.Text = GetLabel("PsScriptDesc", lang);
-            PsScriptButton.Content = GetLabel("PsScriptButton", lang);
-
-            RelativeDllLabel.Text = GetLabel("RelativeDllLabel", lang);
-            RelativeDllDesc.Text = GetLabel("RelativeDllDesc", lang);
-            RelativeDllButton.Content = GetLabel("RelativeDllButton", lang);
+            VulnDllLabel.Text = L("VulnDllLabel"); VulnDllDesc.Text = L("VulnDllDesc"); VulnDllButton.Content = L("VulnDllButton");
+            DynamicLoadLabel.Text = L("DynamicLoadLabel"); DynamicLoadDesc.Text = L("DynamicLoadDesc"); DynamicLoadButton.Content = L("DynamicLoadButton");
+            LoadPluginsLabel.Text = L("LoadPluginsLabel"); LoadPluginsDesc.Text = L("LoadPluginsDesc"); LoadPluginsButton.Content = L("LoadPluginsButton");
+            DownloadExecLabel.Text = L("DownloadExecLabel"); DownloadExecDesc.Text = L("DownloadExecDesc"); DownloadExecButton.Content = L("DownloadExecButton");
+            ManifestLabel.Text = L("ManifestLabel"); ManifestDesc.Text = L("ManifestDesc"); ManifestButton.Content = L("ManifestButton");
+            UserImportLabel.Text = L("UserImportLabel"); UserImportDesc.Text = L("UserImportDesc"); UserImportButton.Content = L("UserImportButton");
+            DllHijackingLabel.Text = L("DllHijackingLabel"); DllHijackingDesc.Text = L("DllHijackingDesc"); DllHijackingButton.Content = L("DllHijackingButton");
+            VulnNugetLabel.Text = L("VulnNugetLabel"); VulnNugetDesc.Text = L("VulnNugetDesc"); VulnNugetButton.Content = L("VulnNugetButton");
+            HttpResourceLabel.Text = L("HttpResourceLabel"); HttpResourceDesc.Text = L("HttpResourceDesc"); HttpResourceButton.Content = L("HttpResourceButton");
+            PsScriptLabel.Text = L("PsScriptLabel"); PsScriptDesc.Text = L("PsScriptDesc"); PsScriptButton.Content = L("PsScriptButton");
+            RelativeDllLabel.Text = L("RelativeDllLabel"); RelativeDllDesc.Text = L("RelativeDllDesc"); RelativeDllButton.Content = L("RelativeDllButton");
+            PartialNameLabel.Text = L("PartialNameLabel"); PartialNameDesc.Text = L("PartialNameDesc"); PartialNameButton.Content = L("PartialNameButton");
+            ResolveHijackLabel.Text = L("ResolveHijackLabel"); ResolveHijackDesc.Text = L("ResolveHijackDesc"); ResolveHijackButton.Content = L("ResolveHijackButton");
+            XamlLoadLabel.Text = L("XamlLoadLabel"); XamlLoadDesc.Text = L("XamlLoadDesc"); XamlLoadButton.Content = L("XamlLoadButton");
+            NativeLoadLabel.Text = L("NativeLoadLabel"); NativeLoadDesc.Text = L("NativeLoadDesc"); NativeLoadButton.Content = L("NativeLoadButton");
         }
 
-
-        // Handlers → branchés sur la classe ResourceVuln (la tienne, inchangée)
-        private void VulnDllButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.CallVulnerableDll(VulnDllInput.Text);
-
-        private void DynamicLoadButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.DynamicLoad(DynamicLoadInput.Text);
-
-        private void LoadPluginsButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.LoadAllPlugins(LoadPluginsInput.Text);
-
-        private void DownloadExecButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.DownloadAndExecute(DownloadExecInput.Text);
-
-        private void ManifestButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.LoadFromManifest(ManifestInput.Text);
-
-        private void UserImportButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.UserImportDll(UserImportInput.Text);
-
-        private void DllHijackingButton_Click(object sender, RoutedEventArgs e)
-            => ResourceVuln.DllHijacking(DllHijackingInput.Text);
-
-        // 8. "NuGet vulnérable"
-        private void VulnNugetButton_Click(object sender, RoutedEventArgs e)
+        private void SetPlaceholders()
         {
-            // Appelle une méthode d'une "fake" librairie vulnérable.
-            try
-            {
-                var result = VulnerableNuGetLib.DoInsecureStuff();
-                MessageBox.Show(result, "Vulnérable NuGet");
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Vulnérable NuGet");
-            }
+            TrySet("VulnDllInput", @"C:\PublicShare\VulnLib.dll");
+            TrySet("DynamicLoadInput", @"C:\PublicShare\AnyLib.dll");
+            TrySet("LoadPluginsInput", @"C:\PublicShare\Plugins");
+            TrySet("DownloadExecInput", "http://127.0.0.1:8000/BadLib.dll");
+            TrySet("ManifestInput", @"C:\PublicShare\manifest.json");
+            TrySet("UserImportInput", @"C:\PublicShare\UserPick.dll");
+            TrySet("DllHijackingInput", @"C:\PublicShare\Victim.exe");
+            TrySet("HttpResourceInput", "http://127.0.0.1:8000/config.txt");
+            TrySet("PsScriptInput", "Get-ChildItem . | Select-Object -First 1");
+            TrySet("RelativeDllInput", @".\RelLib.dll");
+            TrySet("PartialNameInput", "System.Xml"); // example partial
+            TrySet("ResolveHijackInput", @"C:\PublicShare\UntrustedDeps");
+            TrySet("XamlLoadInput", "http://127.0.0.1:8000/view.xaml");
+            TrySet("NativeLoadInput", @"C:\PublicShare\native.dll");
         }
 
-        // 9. Ressource HTTP
-        private void HttpResourceButton_Click(object sender, RoutedEventArgs e)
+        private void TrySet(string name, string value)
         {
-            try
-            {
-                var client = new WebClient();
-                var data = client.DownloadString(HttpResourceInput.Text);
-                MessageBox.Show($"Downloaded resource content:\n{data}", "HTTP Resource");
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "HTTP Resource");
-            }
+            var tb = FindName(name) as TextBox;
+            if (tb != null) tb.Text = value;
         }
 
-        // 10. Script PowerShell
-        private void PsScriptButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var psi = new ProcessStartInfo("powershell", $"-NoProfile -Command \"{PsScriptInput.Text}\"")
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                var process = Process.Start(psi);
-                string output = process.StandardOutput.ReadToEnd();
-                MessageBox.Show("PowerShell output:\n" + output, "PowerShell Script");
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "PowerShell Script");
-            }
-        }
-
-        // 11. DLL chemin relatif
-        private void RelativeDllButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var asm = Assembly.LoadFrom(RelativeDllInput.Text);
-                MessageBox.Show("Loaded assembly: " + asm.FullName, "Relative Path Load");
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message, "Relative Path Load");
-            }
-        }
+        // ===== Handlers (UI → ResourceVuln) =====
+        private void VulnDllButton_Click(object s, RoutedEventArgs e) => ResourceVuln.CallVulnerableDll(VulnDllInput.Text);
+        private void DynamicLoadButton_Click(object s, RoutedEventArgs e) => ResourceVuln.DynamicLoad(DynamicLoadInput.Text);
+        private void LoadPluginsButton_Click(object s, RoutedEventArgs e) => ResourceVuln.LoadAllPlugins(LoadPluginsInput.Text);
+        private void DownloadExecButton_Click(object s, RoutedEventArgs e) => ResourceVuln.DownloadAndExecute(DownloadExecInput.Text);
+        private void ManifestButton_Click(object s, RoutedEventArgs e) => ResourceVuln.LoadFromManifest(ManifestInput.Text);
+        private void UserImportButton_Click(object s, RoutedEventArgs e) => ResourceVuln.UserImportDll(UserImportInput.Text);
+        private void DllHijackingButton_Click(object s, RoutedEventArgs e) => ResourceVuln.DllHijacking(DllHijackingInput.Text);
+        private void VulnNugetButton_Click(object s, RoutedEventArgs e) => ResourceVuln.CallVulnerableNuGet();
+        private void HttpResourceButton_Click(object s, RoutedEventArgs e) => ResourceVuln.HttpResourceLoad(HttpResourceInput.Text);
+        private void PsScriptButton_Click(object s, RoutedEventArgs e) => ResourceVuln.ExecutePowerShell(PsScriptInput.Text);
+        private void RelativeDllButton_Click(object s, RoutedEventArgs e) => ResourceVuln.RelativeDllLoad(RelativeDllInput.Text);
+        private void PartialNameButton_Click(object s, RoutedEventArgs e) => ResourceVuln.PartialNameLoad(PartialNameInput.Text);
+        private void ResolveHijackButton_Click(object s, RoutedEventArgs e) => ResourceVuln.AssemblyResolveHijack(ResolveHijackInput.Text);
+        private void XamlLoadButton_Click(object s, RoutedEventArgs e) => ResourceVuln.LoadXamlFromUrl(XamlLoadInput.Text);
+        private void NativeLoadButton_Click(object s, RoutedEventArgs e) => ResourceVuln.NativeLoadLibrary(NativeLoadInput.Text);
     }
-
 }
-
-
-

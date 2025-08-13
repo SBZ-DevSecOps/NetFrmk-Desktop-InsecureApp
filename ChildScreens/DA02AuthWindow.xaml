@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
         mc:Ignorable="d"
         Title="DA02 – Broken Authentication"
-        Height="980" Width="1150"
+        Height="1000" Width="1600"
         Background="#FFF9F2">
     <ScrollViewer>
         <StackPanel Margin="18">
@@ -19,7 +19,7 @@
                 <ComboBoxItem Content="English"/>
                 <ComboBoxItem Content="Français"/>
             </ComboBox>
-            <UniformGrid Columns="3" Rows="4" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <UniformGrid Columns="5" Rows="3" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                 <!-- 1. Password in Cleartext -->
                 <Border CornerRadius="5" BorderThickness="2"
@@ -99,6 +99,172 @@
                         <TextBlock Name="MfaResult" Margin="0,8,0,0" Foreground="{DynamicResource DA02Panel5}" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
+
+
+
+
+                <!-- 6. Global Session (never invalidated) -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel2}" Background="{DynamicResource DA02Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="GlobalSessLabel" FontWeight="Bold" FontSize="16"
+               Foreground="{DynamicResource DA02Panel2}"/>
+                        <TextBlock Name="GlobalSessDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="GlobalSessButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel2}" Foreground="#212121"
+            Click="GlobalSessButton_Click" Width="220"/>
+                        <TextBlock Name="GlobalSessResult" Margin="8,8,0,0"
+               Foreground="{DynamicResource DA02Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. No Session Expiration -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel3}" Background="{DynamicResource DA02Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="NoExpiryLabel" FontWeight="Bold" FontSize="16"
+               Foreground="{DynamicResource DA02Panel3}"/>
+                        <TextBlock Name="NoExpiryDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="NoExpiryButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel3}" Foreground="#212121"
+            Click="NoExpiryButton_Click" Width="220"/>
+                        <TextBlock Name="NoExpiryResult" Margin="8,8,0,0"
+               Foreground="{DynamicResource DA02Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 8. Reuse Session Across Users -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel4}" Background="{DynamicResource DA02Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ReuseSessLabel" FontWeight="Bold" FontSize="16"
+               Foreground="{DynamicResource DA02Panel4}"/>
+                        <TextBlock Name="ReuseSessDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="ReuseSessButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel4}" Foreground="#212121"
+            Click="ReuseSessButton_Click" Width="220"/>
+                        <TextBlock Name="ReuseSessResult" Margin="8,8,0,0"
+               Foreground="{DynamicResource DA02Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 9. Weak Session ID -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel2}" Background="{DynamicResource DA02Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="WeakSidLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel2}"
+               Text="9. Weak Session ID"/>
+                        <TextBlock Name="WeakSidDesc" FontSize="12" Margin="0,3"
+               Text="Generate a short, predictable session ID (Random + base36)."/>
+                        <Button Name="WeakSidButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel2}" Foreground="#212121"
+            Click="WeakSidButton_Click" Width="220" Content="Generate Weak SID"/>
+                        <TextBlock Name="WeakSidResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 10. Password Reset Token (predictable) -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel3}" Background="{DynamicResource DA02Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ResetLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel3}"
+               Text="10. Predictable Password Reset Token"/>
+                        <TextBlock Name="ResetDesc" FontSize="12" Margin="0,3"
+               Text="Token = Base64(username:utcTicks) — predictable / forgeable."/>
+                        <TextBox Name="ResetUserInput" Style="{StaticResource RoundedTextBox}" Width="260" Margin="0,10,0,4" Text="alice"/>
+                        <Button Name="ResetTokenButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel3}" Foreground="#212121"
+            Click="ResetTokenButton_Click" Width="220" Content="Generate Reset Token"/>
+                        <TextBlock Name="ResetResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 11. Remember-Me persisted in clear -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel4}" Background="{DynamicResource DA02Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="RememberLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel4}"
+               Text="11. Remember-Me (plaintext, world-readable)"/>
+                        <TextBlock Name="RememberDesc" FontSize="12" Margin="0,3"
+               Text="Stores a long-lived token under Public Documents."/>
+                        <TextBox Name="RememberUserInput" Style="{StaticResource RoundedTextBox}" Width="260" Margin="0,10,0,4" Text="bob"/>
+                        <Button Name="RememberMeButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel4}" Foreground="#212121"
+            Click="RememberMeButton_Click" Width="220" Content="Persist Remember-Me"/>
+                        <TextBlock Name="RememberResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 12. Insecure TLS Login (trust-all) -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel5}" Background="{DynamicResource DA02Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TlsLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel5}"
+               Text="12. Insecure TLS Login (trust-all)"/>
+                        <TextBlock Name="TlsDesc" FontSize="12" Margin="0,3"
+               Text="Disables certificate validation and POSTs credentials."/>
+                        <TextBox Name="TlsUrlInput" Style="{StaticResource RoundedTextBox}" Width="340" Margin="0,10,0,4" Text="https://self-signed.local/login"/>
+                        <TextBox Name="TlsUserInput" Style="{StaticResource RoundedTextBox}" Width="220" Margin="0,4,0,4" Text="user"/>
+                        <TextBox Name="TlsPwInput"   Style="{StaticResource RoundedTextBox}" Width="220" Margin="0,4,0,4" Text="secret"/>
+                        <Button Name="TlsLoginButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel5}" Foreground="#212121"
+            Click="TlsLoginButton_Click" Width="220" Content="Send Insecure Login"/>
+                        <TextBlock Name="TlsResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel5}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 13. Insecure Deserialization -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel6}" Background="{DynamicResource DA02Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="DeserializeLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel6}"
+               Text="13. Insecure Deserialization (BinaryFormatter)"/>
+                        <TextBlock Name="DeserializeDesc" FontSize="12" Margin="0,3"
+               Text="Base64 input is deserialized via BinaryFormatter."/>
+                        <TextBox Name="DeserializeInput" Style="{StaticResource RoundedTextBox}" Width="340" Margin="0,10,0,4"
+             Text="AAEAAAD/////AQAAAAAAAAAEAQAA..."/>
+                        <Button Name="DeserializeButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel6}" Foreground="#212121"
+            Click="DeserializeButton_Click" Width="220" Content="Deserialize"/>
+                        <TextBlock Name="DeserializeResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel6}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 14. Encrypt Session with AES-ECB -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel7}" Background="{DynamicResource DA02Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="EcbLabel" FontWeight="Bold" FontSize="16"
+               Foreground="{DynamicResource DA02Panel7}"
+               Text="14. AES-ECB for Session Data"/>
+                        <TextBlock Name="EcbDesc" FontSize="12" Margin="0,3"
+               Text="Encrypts JSON with AES-ECB (hardcoded key)."/>
+                        <TextBox Name="EcbJsonInput" Style="{StaticResource RoundedTextBox}" Width="340" Margin="0,10,0,4"
+             Text="{}{{ &quot;sid&quot;: &quot;abc123&quot;, &quot;role&quot;: &quot;admin&quot; }}"/>
+                        <Button Name="EcbButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel7}" Foreground="#212121"
+            Click="EcbButton_Click" Width="220" Content="Encrypt (ECB)"/>
+                        <TextBlock Name="EcbResult" Margin="8,8,0,0"
+               Foreground="{DynamicResource DA02Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 15. Log Sensitive Token -->
+                <Border CornerRadius="5" BorderThickness="2"
+        BorderBrush="{DynamicResource DA02Panel2}" Background="{DynamicResource DA02Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="LogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA02Panel2}"
+               Text="15. Log Sensitive Token"/>
+                        <TextBlock Name="LogDesc" FontSize="12" Margin="0,3"
+               Text="Writes token into a temp log file (PII leak)."/>
+                        <TextBox Name="LogTokenInput" Style="{StaticResource RoundedTextBox}" Width="340" Margin="0,10,0,4" Text="eyJhbGciOi..."/>
+                        <Button Name="LogTokenButton" Style="{StaticResource RoundedButton}"
+            Background="{DynamicResource DA02Panel2}" Foreground="#212121"
+            Click="LogTokenButton_Click" Width="220" Content="Log Token"/>
+                        <TextBlock Name="LogResult" Margin="8,8,0,0" Foreground="{DynamicResource DA02Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>

@@ -1,120 +1,223 @@
 ﻿<Window x:Class="NetFrmk_Desktop_InsecureApp.DA08MisconfigWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NetFrmk_Desktop_InsecureApp"
-        mc:Ignorable="d"
-        Title="DA08 – Security Misconfiguration"
-        Height="800" Width="1440" Background="#F5F9FA">
-    <ScrollViewer>
-        <StackPanel Margin="18">
-            <TextBlock Name="TitleText" FontWeight="Bold" FontSize="22" Foreground="{DynamicResource DA08Panel1}" Margin="0,0,0,16"/>
-            <TextBlock Name="IntroText" FontSize="14" Foreground="{DynamicResource DA08Panel3}" Margin="0,0,0,18"/>
-            <ComboBox Name="LanguageSelector" Style="{StaticResource RoundedComboBox}" Width="200" SelectionChanged="LanguageSelector_Changed" Margin="0,0,0,22">
-                <ComboBoxItem Content="English"/>
-                <ComboBoxItem Content="Français"/>
-            </ComboBox>
-            <UniformGrid Columns="3" HorizontalAlignment="Center">
+        Title=""
+        Height="1000" Width="1600"
+        WindowStartupLocation="CenterScreen">
 
-                <!-- 1. App.config secrets -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel1}" BorderThickness="2" Background="{DynamicResource DA08Panel7}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="AppConfigLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel1}"/>
-                        <TextBlock Name="AppConfigDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel1}"/>
-                        <Button Name="AppConfigButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel1}" Foreground="White" Click="AppConfigButton_Click"/>
+    <Window.Resources>
+        <!-- Compact styles; assumes RoundedTextBox/RoundedButton exist in App resources -->
+        <Style x:Key="RoundedTextBoxCompact" TargetType="TextBox" BasedOn="{StaticResource RoundedTextBox}">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="MinWidth" Value="180"/>
+            <Setter Property="MaxWidth" Value="260"/>
+            <Setter Property="Margin" Value="0,6,0,6"/>
+        </Style>
+        <Style x:Key="RoundedButtonCompact" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="MinWidth" Value="160"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="16">
+
+            <!-- Header / Language -->
+            <DockPanel Margin="0,0,0,12">
+                <TextBlock x:Name="TitleText" DockPanel.Dock="Left" FontSize="20" FontWeight="Bold"
+                   Foreground="{DynamicResource DA08Panel7}"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Border CornerRadius="6" Padding="6,2" BorderThickness="1"
+                  BorderBrush="{DynamicResource DA08Panel7}" Background="{DynamicResource DA08Panel2}" Margin="8,0,0,0">
+                        <ComboBox x:Name="LanguageSelector" Width="140" SelectionChanged="LanguageSelector_Changed">
+                            <ComboBoxItem>English</ComboBoxItem>
+                            <ComboBoxItem>Français</ComboBoxItem>
+                        </ComboBox>
+                    </Border>
+                </StackPanel>
+            </DockPanel>
+
+            <TextBlock x:Name="IntroText" Margin="0,0,0,16" Foreground="{DynamicResource DA08Panel7}"/>
+
+            <!-- 15 cards (5×3) -->
+            <UniformGrid Columns="5" Rows="3">
+
+                <!-- 1 App.config secret -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel2}" Background="{DynamicResource DA08Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="AppConfigLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel2}"/>
+                        <TextBlock Name="AppConfigDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="AppConfigButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel2}" Foreground="#212121"
+                    Click="AppConfigButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 2. Hardcoded absolute path -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel2}" BorderThickness="2" Background="{DynamicResource DA08Panel6}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="AbsPathLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel2}"/>
-                        <TextBlock Name="AbsPathDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel2}"/>
-                        <Button Name="AbsPathButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel2}" Foreground="Black" Click="AbsPathButton_Click"/>
+                <!-- 2 Hardcoded path -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel3}" Background="{DynamicResource DA08Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="AbsPathLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel3}"/>
+                        <TextBlock Name="AbsPathDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="AbsPathButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel3}" Foreground="#212121"
+                    Click="AbsPathButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 3. Verbose logging in prod -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel3}" BorderThickness="2" Background="{DynamicResource DA08Panel5}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="VerboseLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel3}"/>
-                        <TextBlock Name="VerboseLogDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel3}"/>
-                        <Button Name="VerboseLogButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel3}" Foreground="Black" Click="VerboseLogButton_Click"/>
+                <!-- 3 Verbose logs -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel4}" Background="{DynamicResource DA08Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="VerboseLogLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel4}"/>
+                        <TextBlock Name="VerboseLogDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="VerboseLogButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel4}" Foreground="#212121"
+                    Click="VerboseLogButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 4. Global temp dir -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel4}" BorderThickness="2" Background="{DynamicResource DA08Panel4}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="TempDirLabel" FontWeight="Bold" FontSize="16" Foreground="White"/>
-                        <TextBlock Name="TempDirDesc" FontSize="12" Margin="0,3" Foreground="White"/>
-                        <Button Name="TempDirButton" Style="{StaticResource RoundedButton}" Width="180" Background="White" Foreground="{DynamicResource DA08Panel4}" Click="TempDirButton_Click"/>
+                <!-- 4 Temp dir -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel5}" Background="{DynamicResource DA08Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="TempDirLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel5}"/>
+                        <TextBlock Name="TempDirDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="TempDirButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel5}" Foreground="#212121"
+                    Click="TempDirButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 5. Private key/certificate in project -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel5}" BorderThickness="2" Background="{DynamicResource DA08Panel3}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="PrivKeyLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel5}"/>
-                        <TextBlock Name="PrivKeyDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel5}"/>
-                        <Button Name="PrivKeyButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel5}" Foreground="Black" Click="PrivKeyButton_Click"/>
+                <!-- 5 Private key -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel6}" Background="{DynamicResource DA08Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="PrivKeyLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel6}"/>
+                        <TextBlock Name="PrivKeyDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="PrivKeyButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel6}" Foreground="#212121"
+                    Click="PrivKeyButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 6. Wide permissions (Everyone) -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel6}" BorderThickness="2" Background="{DynamicResource DA08Panel2}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="WidePermLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel6}"/>
-                        <TextBlock Name="WidePermDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel6}"/>
-                        <Button Name="WidePermButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel6}" Foreground="Black" Click="WidePermButton_Click"/>
+                <!-- 6 Wide permissions -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel7}" Background="{DynamicResource DA08Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="WidePermLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel7}"/>
+                        <TextBlock Name="WidePermDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="WidePermButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel7}" Foreground="#212121"
+                    Click="WidePermButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 7. Writable hosts/system files -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel7}" BorderThickness="2" Background="{DynamicResource DA08Panel1}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="HostsLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel7}"/>
-                        <TextBlock Name="HostsDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel7}"/>
-                        <Button Name="HostsButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel7}" Foreground="Black" Click="HostsButton_Click"/>
+                <!-- 7 Hosts -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel2}" Background="{DynamicResource DA08Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="HostsLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel2}"/>
+                        <TextBlock Name="HostsDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="HostsButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel2}" Foreground="#212121"
+                    Click="HostsButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 8. Debug mode enabled in prod -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel1}" BorderThickness="2" Background="{DynamicResource DA08Panel5}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="DebugLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel1}"/>
-                        <TextBlock Name="DebugDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel1}"/>
-                        <Button Name="DebugButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel1}" Foreground="White" Click="DebugButton_Click"/>
+                <!-- 8 Debug -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel3}" Background="{DynamicResource DA08Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="DebugLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel3}"/>
+                        <TextBlock Name="DebugDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="DebugButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel3}" Foreground="#212121"
+                    Click="DebugButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 9. Weak cryptography -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel2}" BorderThickness="2" Background="{DynamicResource DA08Panel4}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="CryptoLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel2}"/>
-                        <TextBlock Name="CryptoDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel2}"/>
-                        <Button Name="CryptoButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel2}" Foreground="White" Click="CryptoButton_Click"/>
+                <!-- 9 Crypto -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel4}" Background="{DynamicResource DA08Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CryptoLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel4}"/>
+                        <TextBlock Name="CryptoDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="CryptoButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel4}" Foreground="#212121"
+                    Click="CryptoButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 10. Insecure IPC -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel3}" BorderThickness="2" Background="{DynamicResource DA08Panel6}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="IPCLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel3}"/>
-                        <TextBlock Name="IPCDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel3}"/>
-                        <Button Name="IPCButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel3}" Foreground="Black" Click="IPCButton_Click"/>
+                <!-- 10 IPC -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel5}" Background="{DynamicResource DA08Panel4}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="IPCLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel5}"/>
+                        <TextBlock Name="IPCDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="IPCButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel5}" Foreground="#212121"
+                    Click="IPCButton_Click"/>
                     </StackPanel>
                 </Border>
 
-                <!-- 11. Runs as admin by default -->
-                <Border CornerRadius="5" BorderBrush="{DynamicResource DA08Panel4}" BorderThickness="2" Background="{DynamicResource DA08Panel7}" Margin="8">
-                    <StackPanel Margin="10">
-                        <TextBlock Name="AdminLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel4}"/>
-                        <TextBlock Name="AdminDesc" FontSize="12" Margin="0,3" Foreground="{DynamicResource DA08Panel4}"/>
-                        <Button Name="AdminButton" Style="{StaticResource RoundedButton}" Width="180" Background="{DynamicResource DA08Panel4}" Foreground="Black" Click="AdminButton_Click"/>
+                <!-- 11 Admin -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel6}" Background="{DynamicResource DA08Panel3}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="AdminLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel6}"/>
+                        <TextBlock Name="AdminDesc" FontSize="12" Margin="0,3"/>
+                        <Button Name="AdminButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel6}" Foreground="#212121"
+                    Click="AdminButton_Click"/>
                     </StackPanel>
                 </Border>
+
+                <!-- 12 TLS cert bypass (with input + result) -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel7}" Background="{DynamicResource DA08Panel2}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="CertLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel7}"/>
+                        <TextBlock Name="CertDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="CertUrlInput" Style="{StaticResource RoundedTextBoxCompact}"/>
+                        <Button Name="CertButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel7}" Foreground="#212121"
+                    Click="CertButton_Click"/>
+                        <TextBlock Name="CertResult" Margin="8,8,0,0" Foreground="{DynamicResource DA08Panel7}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 13 HttpListener 0.0.0.0 (with input + result) -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel2}" Background="{DynamicResource DA08Panel7}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="ListenerLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel2}"/>
+                        <TextBlock Name="ListenerDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="ListenerPrefixInput" Style="{StaticResource RoundedTextBoxCompact}"/>
+                        <Button Name="ListenerButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel2}" Foreground="#212121"
+                    Click="ListenerButton_Click"/>
+                        <TextBlock Name="ListenerResult" Margin="8,8,0,0" Foreground="{DynamicResource DA08Panel2}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 14 Json.NET TypeNameHandling=All (with input + result) -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel3}" Background="{DynamicResource DA08Panel6}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="JsonNetLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel3}"/>
+                        <TextBlock Name="JsonNetDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="JsonNetInput" Style="{StaticResource RoundedTextBoxCompact}" AcceptsReturn="True" Height="80" TextWrapping="Wrap"/>
+                        <Button Name="JsonNetButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel3}" Foreground="#212121"
+                    Click="JsonNetButton_Click"/>
+                        <TextBlock Name="JsonNetResult" Margin="8,8,0,0" Foreground="{DynamicResource DA08Panel3}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 15 Default credentials (two inputs + result) -->
+                <Border CornerRadius="5" BorderThickness="2" BorderBrush="{DynamicResource DA08Panel4}" Background="{DynamicResource DA08Panel5}" Margin="8">
+                    <StackPanel Margin="14">
+                        <TextBlock Name="DefaultCredsLabel" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource DA08Panel4}"/>
+                        <TextBlock Name="DefaultCredsDesc" FontSize="12" Margin="0,3"/>
+                        <TextBox Name="DefaultUserInput" Style="{StaticResource RoundedTextBoxCompact}"/>
+                        <TextBox Name="DefaultPassInput" Style="{StaticResource RoundedTextBoxCompact}"/>
+                        <Button Name="DefaultCredsButton" Style="{StaticResource RoundedButtonCompact}"
+                    Background="{DynamicResource DA08Panel4}" Foreground="#212121"
+                    Click="DefaultCredsButton_Click"/>
+                        <TextBlock Name="DefaultCredsResult" Margin="8,8,0,0" Foreground="{DynamicResource DA08Panel4}" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
             </UniformGrid>
         </StackPanel>
     </ScrollViewer>
